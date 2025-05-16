@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://chw8kaxub22yj"]
+
+[ext_resource type="Texture2D" uid="uid://brfagytt2v72b" path="res://magic_bolt.png" id="1_tck5r"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x2u3o"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_tck5r")
+}],
+"loop": true,
+"name": &"Magic",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5bpkj"]
+radius = 8.35
+
+[node name="Spell 1" type="Area2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_x2u3o")
+animation = &"Magic"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(10, 0)
+shape = SubResource("CircleShape2D_5bpkj")

@@ -1,0 +1,57 @@
+[gd_scene load_steps=6 format=3 uid="uid://devxyhnuigd0c"]
+
+[ext_resource type="Texture2D" uid="uid://srcx5k84dapb" path="res://Forest Monster.png" id="1_thc0q"]
+
+[sub_resource type="GDScript" id="GDScript_wse8f"]
+resource_name = "Forest Monster Logic"
+script/source = "extends CharacterBody2D
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wse8f"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_thc0q")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ic0uy"]
+radius = 30.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_k3n1d"]
+radius = 500.0
+
+[node name="Forest Monster" type="CharacterBody2D"]
+z_index = -5
+script = SubResource("GDScript_wse8f")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(992, 406.085)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_wse8f")
+
+[node name="Hitbox" type="CollisionShape2D" parent="."]
+texture_filter = 1
+position = Vector2(992, 406.085)
+shape = SubResource("CircleShape2D_ic0uy")
+
+[node name="Visibilty" type="Area2D" parent="."]
+position = Vector2(992, 406.085)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Visibilty"]
+shape = SubResource("CircleShape2D_k3n1d")
+one_way_collision_margin = 0.0
+debug_color = Color(0.953159, 1.05888e-06, 0.55499, 0.42)
+
+[connection signal="area_entered" from="Visibilty" to="." method="_on_visibilty_area_entered" binds= [true]]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=4 uid="uid://4kuhak4ql42j"]
+[gd_scene load_steps=98 format=4 uid="uid://4kuhak4ql42j"]
 
 [ext_resource type="Texture2D" uid="uid://fuaxka6qbjvr" path="res://sky.jpg" id="1_4d7sh"]
 [ext_resource type="Texture2D" uid="uid://dlyw7ftdhbgko" path="res://Wood Tileset.png" id="2_ir8iy"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://bquwd8cgiosd" path="res://Forest Monster idle_0002.png" id="12_ta5nu"]
 [ext_resource type="Texture2D" uid="uid://c4kmg3brwxp4v" path="res://Forest Monster idle_0003.png" id="13_flf07"]
 [ext_resource type="Texture2D" uid="uid://ch30u5faqvyl8" path="res://Forest Monster idle_0004.png" id="14_k73cj"]
+[ext_resource type="FontFile" uid="uid://doxkm432l8txb" path="res://Pixellettersfull-BnJ5.ttf" id="15_7vxoj"]
 [ext_resource type="Texture2D" uid="uid://c6sikavlpiiak" path="res://Forest Monster Projectile_0001.png" id="16_fs4d3"]
 [ext_resource type="Texture2D" uid="uid://xkeqiuhx5x6g" path="res://Forest Monster Projectile_0002.png" id="17_7vxoj"]
 [ext_resource type="Texture2D" uid="uid://8cbxxe5hqdus" path="res://Forest Monster Projectile_0003.png" id="18_ei405"]
@@ -407,12 +408,13 @@ var coyote_time = 0
 var sliding = -1
 var health = 100
 var checkpoint = Vector2(224, 384)
-
+var max_health = 100
 func _ready() -> void:
 	$AnimationPlayer.play(\"spawn\")
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
+	$\"../../CanvasLayer/HealthBar/HealthLabel\".text = \"Health: \" + str(health)
 	var direction := Input.get_axis(\"left\", \"right\")
 	if health <= 0:
 		health = 0
@@ -420,7 +422,7 @@ func _physics_process(delta: float) -> void:
 		position = checkpoint
 	coyote_time -= 0.5 * delta
 	sliding -= 0.5 * delta
-	if Input.is_action_just_pressed(\"Spell 1\"):
+	if Input.is_action_just_pressed(\"Spell 1\") and $\"Spell_1 Cooldown\".time_left <= 0:
 		newspell()
 		
 	if is_on_floor():
@@ -550,19 +552,23 @@ func newspell():
 	newSpell.position = position
 	newSpell.facing = facing
 	add_sibling(newSpell)
+	$\"Spell_1 Cooldown\".start()
 
 func damaged(damage):
 	health -= damage
 	$AnimationPlayer.queue(\"damaged\")
-	if health < 0:
+	var tween = get_tree().create_tween()
+	tween.tween_property($\"../../CanvasLayer/HealthBar/HealthBar\", \"scale\", Vector2($\"../../CanvasLayer/HealthBar/HealthBar\".scale - Vector2(max_health / damage * 0.01, 0)), 0.25).set_trans(Tween.TRANS_SINE)
+	if health <= 0:
 		$AnimationPlayer.play(\"death\")
 		$AnimatedSprite2D.play(\"idle\")
 		$AnimatedSprite2D.pause()
+		$\"../../CanvasLayer/HealthBar/HealthBar\".visible = false
 		await $AnimationPlayer.animation_finished
+		$\"../../CanvasLayer/HealthBar/HealthBar\".visible = true
 		health = 100
 		position = checkpoint
 		$AnimationPlayer.play(\"spawn\")
-		
 "
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2nhjh"]
@@ -674,6 +680,18 @@ tracks/2/keys = {
 "update": 0,
 "values": [Vector2(0, 0)]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../../CanvasLayer/HealthBar/HealthBar:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_2nhjh"]
 resource_name = "death"
@@ -753,6 +771,18 @@ tracks/2/keys = {
 "update": 0,
 "values": [Vector2(0, 0)]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../../CanvasLayer/HealthBar/HealthBar:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.34151, 1),
+"update": 0,
+"values": [Vector2(0, 1), Vector2(1, 1)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2nhjh"]
 _data = {
@@ -784,7 +814,6 @@ func _ready() -> void:
 	$MovePlayer.play(\"idle\")
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(_delta: float) -> void:
-	
 	match intent:
 		\"idle\":
 			nav.target_position = startpos
@@ -804,6 +833,7 @@ func _physics_process(_delta: float) -> void:
 				velocity = Vector2.ZERO
 	if health <= 0:
 		intent = \"dead\"
+		$CollisionShape2D.disabled = true
 		$HealthBar/HealthBar.visible = false
 		$Timer.stop()
 		AniPlay.stop()
@@ -842,7 +872,7 @@ func animations():
 func Attack1():
 	var attack1 = $\"../Attack 1\".duplicate()
 	attack1.initialSpeed = ($\"../Wizard\".global_position - self.global_position).normalized() * 750
-	attack1.position = position
+	attack1.position = position + Vector2(0, -22)
 	attack1.facing = facing
 	attack1.look_at($\"../Wizard\".global_position)
 	add_sibling(attack1)
@@ -853,7 +883,8 @@ func _on_spell_1_body_shape_entered(_body_rid: RID, body: Node2D, _body_shape_in
 	if body == self:
 		health -= 10
 		AniPlay.queue(\"damaged\")
-		$HealthBar/HealthBar.scale.x -= 0.34
+		var tween = get_tree().create_tween()
+		tween.tween_property($HealthBar/HealthBar, \"scale\", Vector2($HealthBar/HealthBar.scale - Vector2(0.34, 0)), 0.25).set_trans(Tween.TRANS_SINE)
 		if intent == \"idle\":
 			intent = \"approach\"
 "
@@ -986,7 +1017,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_fs4d3"]
 resource_name = "damaged"
-length = 0.5
+length = 0.33
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -994,7 +1025,7 @@ tracks/0/path = NodePath("AnimatedSprite2D:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.366667),
+"times": PackedFloat32Array(0, 0.33),
 "transitions": PackedFloat32Array(0.353553, 1),
 "update": 0,
 "values": [Color(1, 0.0871313, 0.0901363, 1), Color(1, 1, 1, 1)]
@@ -1284,6 +1315,34 @@ offset_bottom = 0.0240002
 layout_mode = 2
 script = SubResource("GDScript_wtcfe")
 
+[node name="HealthBar" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_top = 0.975
+anchor_right = 0.229
+anchor_bottom = 1.0
+offset_top = 0.200012
+offset_right = 0.191986
+color = Color(0.560784, 0.176471, 0, 1)
+
+[node name="HealthBar" type="ColorRect" parent="CanvasLayer/HealthBar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.560784, 1, 0, 1)
+
+[node name="HealthLabel" type="Label" parent="CanvasLayer/HealthBar"]
+z_index = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.36
+anchor_bottom = 1.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("15_7vxoj")
+text = "Health: 100"
+
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 z_index = -5
 layout_mode = 0
@@ -1367,6 +1426,10 @@ libraries = {
 &"": SubResource("AnimationLibrary_2nhjh")
 }
 
+[node name="Spell_1 Cooldown" type="Timer" parent="World/Wizard"]
+wait_time = 0.25
+one_shot = true
+
 [node name="Forest Monster" type="CharacterBody2D" parent="World" node_paths=PackedStringArray("target")]
 position = Vector2(618, 381.32)
 collision_layer = 2
@@ -1446,6 +1509,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(1, 1.515)
 color = Color(0.560784, 1, 0, 1)
 
 [node name="Spell 1" parent="World" instance=ExtResource("11_hqns4")]

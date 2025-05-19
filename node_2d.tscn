@@ -1364,10 +1364,8 @@ target_position = Vector2(0, -45)
 hit_from_inside = true
 
 [node name="Wall Jump Req" type="ShapeCast2D" parent="World/Wizard"]
-visible = false
 position = Vector2(25, 0)
 shape = SubResource("RectangleShape2D_hqns4")
-target_position = Vector2(0, 25)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="World/Wizard"]
 libraries = {
@@ -1478,7 +1476,7 @@ position = Vector2(8359.89, -504.035)
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Forest Monster4"]
 
 [node name="Forest Monster5" parent="World" instance=ExtResource("12_e8dv2")]
-position = Vector2(8425.77, -906.662)
+position = Vector2(8359, -892)
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Forest Monster5"]
 

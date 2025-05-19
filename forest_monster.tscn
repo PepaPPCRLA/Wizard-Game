@@ -51,6 +51,7 @@ func _physics_process(_delta: float) -> void:
 			else:
 				velocity = Vector2.ZERO
 	if health <= 0:
+		health = 0
 		intent = \"dead\"
 		$CollisionShape2D.disabled = true
 		$HealthBar/HealthBar.visible = false
@@ -108,9 +109,11 @@ func _on_pathfinder_interval_timeout() -> void:
 			if $RayCast2D.is_colliding and ($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1600:
 				intent = \"idle\"
 	else:
+		await get_tree().create_timer(0.001).timeout
 		if not abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1000 and not $RayCast2D.is_colliding() and not intent == \"dead\":
 			intent = \"approach\"
 			attack.play(\"agro\")
+			$\"../..\".print(\"gyatt\", true)
 "
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_hqns4"]

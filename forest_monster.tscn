@@ -1,10 +1,13 @@
-[gd_scene load_steps=18 format=3 uid="uid://devxyhnuigd0c"]
+[gd_scene load_steps=19 format=3 uid="uid://devxyhnuigd0c"]
 
 [ext_resource type="Texture2D" uid="uid://bmn0cm8b48wjj" path="res://Forest Monster idle_0001.png" id="1_g6q7d"]
 [ext_resource type="Texture2D" uid="uid://bquwd8cgiosd" path="res://Forest Monster idle_0002.png" id="2_uw6a2"]
 [ext_resource type="Texture2D" uid="uid://c4kmg3brwxp4v" path="res://Forest Monster idle_0003.png" id="3_hd58r"]
 [ext_resource type="Texture2D" uid="uid://ch30u5faqvyl8" path="res://Forest Monster idle_0004.png" id="4_hru4h"]
 [ext_resource type="Texture2D" uid="uid://7m74utn0yrsw" path="res://Agromation Mark.png" id="5_gava5"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ei405"]
+light_mode = 1
 
 [sub_resource type="GDScript" id="GDScript_hqns4"]
 resource_name = "Forest Monster Logic"
@@ -18,7 +21,7 @@ var dir : float
 @onready var AniPlay = $AnimationPlayer
 @onready var movement = $MovePlayer
 @onready var attack = $AttackPlayer
-var startpos = global_position
+var startpos
 var damage_tween
 var intent: String = \"idle\"
 # Called when the node enters the scene tree for the first time.
@@ -26,7 +29,9 @@ func _ready() -> void:
 	$Timer.connect(\"timeout\",Attack1)
 	$AnimatedSprite2D.play(\"idle\")
 	$MovePlayer.play(\"idle\")
+	startpos = global_position
 # Called every frame. 'delta' is the elapsed time since the previous frame.
+
 func _physics_process(_delta: float) -> void:
 	match intent:
 		\"idle\":
@@ -51,6 +56,7 @@ func _physics_process(_delta: float) -> void:
 		$HealthBar/HealthBar.visible = false
 		$Timer.stop()
 		AniPlay.stop()
+		attack.stop()
 		movement.play(\"death\")
 		await get_tree().create_timer(2).timeout
 		queue_free()
@@ -58,22 +64,6 @@ func _physics_process(_delta: float) -> void:
 	$HealthBar.position = $AnimatedSprite2D.position + Vector2(-27.5, -30)
 	move_and_slide()
 
-func _on_pathfinder_interval_timeout() -> void:
-	$RayCast2D.target_position = to_local(target.position)
-	if intent == \"approach\":
-		nav.target_position = target.global_position
-		$\"../Pathfinder Interval\".start()
-		if $RayCast2D.is_colliding():
-			$Timer.start()
-		if abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 2000:
-			intent = \"idle\"
-		else:
-			if $RayCast2D.is_colliding and ($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1600:
-				intent = \"idle\"
-	else:
-		if not abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 500 and not $RayCast2D.is_colliding():
-			intent = \"approach\"
-			attack.play(\"agro\")
 func animations():
 	if not (velocity.x / abs(velocity.x)) == facing:
 		facing = (velocity.x) / (abs(velocity.x))
@@ -94,13 +84,31 @@ func Attack1():
 
 
 
-func _on_spell_1_body_shape_entered(_body_rid: RID, body: Node2D, _body_shape_index: int, _local_shape_index: int) -> void:
-	if body == self:
-		health -= 10
-		AniPlay.queue(\"damaged\")
-		var tween = get_tree().create_tween()
-		tween.tween_property($HealthBar/HealthBar, \"scale\", Vector2($HealthBar/HealthBar.scale - Vector2(0.34, 0)), 0.25).set_trans(Tween.TRANS_SINE)
-		if intent == \"idle\":
+func damage(damage):
+	health -= damage
+	AniPlay.queue(\"damaged\")
+	var tween = get_tree().create_tween()
+	tween.tween_property($HealthBar/HealthBar, \"scale\", Vector2($HealthBar/HealthBar.scale - Vector2(0.34, 0)), 0.25).set_trans(Tween.TRANS_SINE)
+	if intent == \"idle\":
+		intent = \"approach\"
+		attack.play(\"agro\")
+
+func _on_pathfinder_interval_timeout() -> void:
+	if !target:
+		target = $\"../Wizard\"
+	$RayCast2D.target_position = to_local(target.position)
+	if intent == \"approach\":
+		nav.target_position = target.global_position
+		$\"Pathfinder Interval\".start()
+		if $RayCast2D.is_colliding():
+			$Timer.start()
+		if abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 2000:
+			intent = \"idle\"
+		else:
+			if $RayCast2D.is_colliding and ($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1600:
+				intent = \"idle\"
+	else:
+		if not abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1000 and not $RayCast2D.is_colliding() and not intent == \"dead\":
 			intent = \"approach\"
 			attack.play(\"agro\")
 "
@@ -261,6 +269,70 @@ tracks/10/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(2, 2)]
+}
+
+[sub_resource type="Animation" id="Animation_1fr6y"]
+resource_name = "agro"
+length = 0.75
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.733333),
+"transitions": PackedFloat32Array(1, 3.24901, 1),
+"update": 0,
+"values": [Vector2(1.8, 1.8), Vector2(1.8, 2.5), Vector2(1.8, 1.8)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Agro:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.666667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Agro:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.733333),
+"transitions": PackedFloat32Array(0.378929, 1),
+"update": 0,
+"values": [Vector2(2, 2), Vector2(3, 3)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Agro:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.666667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Agro:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.666667),
+"transitions": PackedFloat32Array(0.378929, 1),
+"update": 0,
+"values": [Vector2(0, -50), Vector2(0, -100)]
 }
 
 [sub_resource type="Animation" id="Animation_0h7mo"]
@@ -444,70 +516,6 @@ tracks/0/keys = {
 "values": [0.0, 0.0977384]
 }
 
-[sub_resource type="Animation" id="Animation_1fr6y"]
-resource_name = "agro"
-length = 0.75
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite2D:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(-0.0333333, 0.2, 0.733333),
-"transitions": PackedFloat32Array(0.554785, 3.24901, 1),
-"update": 0,
-"values": [Vector2(1.8, 1.8), Vector2(1.8, 2.5), Vector2(1.8, 1.8)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Agro:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.666667),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Agro:scale")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(-0.0333333, 0.733333),
-"transitions": PackedFloat32Array(2, 1),
-"update": 0,
-"values": [Vector2(2, 2), Vector2(3, 3)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Agro:modulate")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(-0.0333333, 0.666667),
-"transitions": PackedFloat32Array(1.8025, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Agro:position")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(-0.0333333, 0.666667),
-"transitions": PackedFloat32Array(2, 1),
-"update": 0,
-"values": [Vector2(0, -55), Vector2(0, -100)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_d2bti"]
 _data = {
 &"RESET": SubResource("Animation_x0ka3"),
@@ -520,20 +528,22 @@ _data = {
 &"move_right": SubResource("Animation_d2bti")
 }
 
-[node name="Forest Monster" type="CharacterBody2D" node_paths=PackedStringArray("target")]
-modulate = Color(0.720467, 0.720468, 0.720467, 1)
+[node name="Forest Monster" type="CharacterBody2D"]
+light_mask = 0
+material = SubResource("CanvasItemMaterial_ei405")
 collision_layer = 2
 collision_mask = 2
 motion_mode = 1
 wall_min_slide_angle = 0.0
 platform_on_leave = 2
 script = SubResource("GDScript_hqns4")
-target = NodePath("")
 
 [node name="Timer" type="Timer" parent="."]
 autostart = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+light_mask = 0
+use_parent_material = true
 position = Vector2(0, -10)
 scale = Vector2(1.8, 1.8)
 sprite_frames = SubResource("SpriteFrames_hqns4")
@@ -546,6 +556,7 @@ visible = false
 shape = SubResource("CircleShape2D_x0ka3")
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
+position = Vector2(0, -25)
 collision_mask = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -581,7 +592,6 @@ debug_path_custom_color = Color(1, 1, 0, 1)
 [node name="HealthBar" type="ColorRect" parent="."]
 z_index = 100
 texture_filter = 1
-anchors_preset = -1
 offset_left = -26.0
 offset_top = -35.0
 offset_right = 30.0
@@ -589,6 +599,7 @@ offset_bottom = -32.32
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.560784, 0.176471, 0, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="HealthBar" type="ColorRect" parent="HealthBar"]
 z_index = 1
@@ -601,9 +612,18 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1, 1.515)
 color = Color(0.560784, 1, 0, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="Agro" type="Sprite2D" parent="."]
 visible = false
+use_parent_material = true
 position = Vector2(-48, -8)
 scale = Vector2(2, 2)
 texture = ExtResource("5_gava5")
+
+[node name="Pathfinder Interval" type="Timer" parent="."]
+wait_time = 0.2
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="Pathfinder Interval" to="." method="_on_pathfinder_interval_timeout"]

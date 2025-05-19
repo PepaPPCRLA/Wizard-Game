@@ -33,6 +33,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 
 func _physics_process(_delta: float) -> void:
+	$VisibleOnScreenEnabler2D.global_position = target.global_position
 	match intent:
 		\"idle\":
 			nav.target_position = startpos
@@ -113,6 +114,7 @@ func _on_pathfinder_interval_timeout() -> void:
 		if not abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1000 and not $RayCast2D.is_colliding() and not intent == \"dead\":
 			intent = \"approach\"
 			attack.play(\"agro\")
+			
 "
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_hqns4"]

@@ -1387,6 +1387,8 @@ one_shot = true
 position = Vector2(2160, 320)
 target = NodePath("../Wizard")
 
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Forest Monster"]
+
 [node name="Spell 1" parent="World" instance=ExtResource("11_hqns4")]
 position = Vector2(367, 397)
 collision_layer = 2
@@ -1463,26 +1465,42 @@ directional key"
 [node name="Forest Monster2" parent="World" instance=ExtResource("12_e8dv2")]
 position = Vector2(4131.92, 84.6886)
 
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Forest Monster2"]
+
 [node name="Forest Monster3" parent="World" instance=ExtResource("12_e8dv2")]
 position = Vector2(8409.22, -697.551)
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Forest Monster3"]
 
 [node name="Forest Monster4" parent="World" instance=ExtResource("12_e8dv2")]
 position = Vector2(8359.89, -504.035)
 
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Forest Monster4"]
+
 [node name="Forest Monster5" parent="World" instance=ExtResource("12_e8dv2")]
 position = Vector2(8425.77, -906.662)
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Forest Monster5"]
 
 [node name="Forest Monster6" parent="World" instance=ExtResource("12_e8dv2")]
 position = Vector2(12236.5, -959.719)
 
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Forest Monster6"]
+
 [node name="Forest Monster7" parent="World" instance=ExtResource("12_e8dv2")]
 position = Vector2(12344.8, -1059.28)
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Forest Monster7"]
 
 [node name="Forest Monster8" parent="World" instance=ExtResource("12_e8dv2")]
 position = Vector2(12107.7, -1049.03)
 
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Forest Monster8"]
+
 [node name="Forest Monster9" parent="World" instance=ExtResource("12_e8dv2")]
 position = Vector2(12571.8, -996.322)
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Forest Monster9"]
 
 [connection signal="body_shape_entered" from="World/Spell 1" to="World/Spell 1" method="_on_body_shape_entered"]
 [connection signal="body_shape_entered" from="World/Attack 1" to="World/Forest Monster" method="_on_attack_1_body_shape_entered"]

@@ -31,7 +31,7 @@ rotation = 2.35619
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_tck5r")
 animation = &"magic"
-frame_progress = 0.308542
+frame_progress = 0.858914
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(10, 0)

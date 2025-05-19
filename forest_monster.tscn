@@ -622,7 +622,7 @@ scale = Vector2(2, 2)
 texture = ExtResource("5_gava5")
 
 [node name="Pathfinder Interval" type="Timer" parent="."]
-wait_time = 0.2
+wait_time = 0.33
 autostart = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

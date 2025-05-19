@@ -1,7 +1,9 @@
-[gd_scene load_steps=86 format=4 uid="uid://4kuhak4ql42j"]
+[gd_scene load_steps=96 format=4 uid="uid://4kuhak4ql42j"]
 
 [ext_resource type="Texture2D" uid="uid://fuaxka6qbjvr" path="res://sky.jpg" id="1_4d7sh"]
+[ext_resource type="Texture2D" uid="uid://ca58cotvw4d4s" path="res://Spell_1_ui.png" id="2_fs4d3"]
 [ext_resource type="Texture2D" uid="uid://dlyw7ftdhbgko" path="res://Wood Tileset.png" id="2_ir8iy"]
+[ext_resource type="Texture2D" uid="uid://b84dtwbbtlv7u" path="res://Block_UI.png" id="3_7vxoj"]
 [ext_resource type="Texture2D" uid="uid://dw4xsss2kuy3p" path="res://Grass Tileset.png" id="3_hqns4"]
 [ext_resource type="Texture2D" uid="uid://cedb6hr1nry5q" path="res://Background Wood Tileset.png" id="4_x0ka3"]
 [ext_resource type="Texture2D" uid="uid://c68kv2cg0cn64" path="res://wizard_idle_0001.png" id="5_0h7mo"]
@@ -52,6 +54,135 @@ func print(output,important = false):
 func clear():
 	debug = \"\"
 "
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fs4d3"]
+
+[sub_resource type="Animation" id="Animation_1fr6y"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Spell 1:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Spell 1 Overlay:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Spell 1 Overlay:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_7vxoj"]
+resource_name = "Fire Spell 1"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Spell 1:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(-0.0333333, 0.133333),
+"transitions": PackedFloat32Array(0.378929, 1),
+"update": 0,
+"values": [Vector2(0.9, 0.9), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Spell 1 Overlay:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(-0.0333333, 0.133333, 0.25),
+"transitions": PackedFloat32Array(0.392292, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2hxjc"]
+_data = {
+&"Fire Spell 1": SubResource("Animation_7vxoj"),
+&"RESET": SubResource("Animation_1fr6y")
+}
+
+[sub_resource type="Animation" id="Animation_ebxd8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Spell 1 Overlay:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0.433807)]
+}
+
+[sub_resource type="Animation" id="Animation_2u7jv"]
+resource_name = "unblock"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Spell 1 Overlay:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(0.353553, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_2hxjc"]
+resource_name = "block"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Spell 1 Overlay:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(0.353553, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ebxd8"]
+_data = {
+&"RESET": SubResource("Animation_ebxd8"),
+&"block": SubResource("Animation_2hxjc"),
+&"unblock": SubResource("Animation_2u7jv")
+}
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_pkg7o"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
@@ -424,11 +555,16 @@ var checkpoint = Vector2(224, 384)
 var max_health = 100
 var state = \"alive\"
 var blocking = false
+var relics: Array
 @onready var global = $\"../..\"
 func _ready() -> void:
 	$AnimationPlayer.play(\"spawn\")
 
 func _physics_process(delta: float) -> void:
+	if Input.is_action_just_pressed(\"block\") and not $\"Force Sliding Req\".is_colliding():
+		$\"../../CanvasLayer/Block/AnimationPlayer\".play(\"block\")
+	elif Input.is_action_just_released(\"block\"):
+		$\"../../CanvasLayer/Block/AnimationPlayer\".play(\"unblock\")
 	if Input.is_action_pressed(\"block\") and not $\"Force Sliding Req\".is_colliding():
 		blocking = true
 		sliding = -1
@@ -446,7 +582,7 @@ func _physics_process(delta: float) -> void:
 		sliding -= 0.5 * delta
 		if Input.is_action_just_pressed(\"Spell 1\") and $\"Spell_1 Cooldown\".time_left <= 0 and blocking == false:
 			newspell()
-			
+			$\"../../CanvasLayer/Spell 1/AnimationPlayer\".play(\"Fire Spell 1\")
 		if is_on_floor():
 			coyote_time = 0.1
 		if not is_on_floor():
@@ -709,6 +845,30 @@ tracks/3/keys = {
 "update": 0,
 "values": [Vector2(1, 1)]
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("../../CanvasLayer/Block/Spell 1 Overlay:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../../CanvasLayer/Spell 1/Spell 1 Overlay:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_gt76g"]
 resource_name = "attack"
@@ -832,6 +992,30 @@ tracks/3/keys = {
 "update": 0,
 "values": [Vector2(0, 1), Vector2(1, 1)]
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("../../CanvasLayer/Block/Spell 1 Overlay:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.366021, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../../CanvasLayer/Spell 1/Spell 1 Overlay:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.366021, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_rjqkl"]
 resource_name = "blocked"
@@ -873,7 +1057,7 @@ func _ready() -> void:
 		facing = -1000
 		position.y = 1000
 	elif facing == -1:
-		Sprite.flip_h = true
+		Sprite.rotation_degrees = -45
 		$CollisionShape2D.position.x = -10
 	else:
 		position = Wizard.position + Vector2(10,10)
@@ -1037,6 +1221,85 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("15_7vxoj")
 text = "Health: 100"
 
+[node name="Spell 1" type="Panel" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = 0.953
+anchor_top = 0.92
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.143921
+offset_top = -0.160034
+offset_right = -14.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Spell 1" type="TextureRect" parent="CanvasLayer/Spell 1"]
+material = SubResource("CanvasItemMaterial_fs4d3")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_fs4d3")
+
+[node name="Spell 1 Overlay" type="Panel" parent="CanvasLayer/Spell 1"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/Spell 1"]
+libraries = {
+&"": SubResource("AnimationLibrary_2hxjc")
+}
+
+[node name="Block" type="Panel" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = 0.906
+anchor_top = 0.92
+anchor_right = 0.953
+anchor_bottom = 1.0
+offset_top = -0.160034
+offset_right = -14.0
+offset_bottom = -12.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Spell 1" type="TextureRect" parent="CanvasLayer/Block"]
+material = SubResource("CanvasItemMaterial_fs4d3")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 1.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.944505, 0.944505)
+texture = ExtResource("3_7vxoj")
+stretch_mode = 5
+
+[node name="Spell 1 Overlay" type="Panel" parent="CanvasLayer/Block"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/Block"]
+libraries = {
+&"": SubResource("AnimationLibrary_ebxd8")
+}
+
 [node name="World" type="Node2D" parent="."]
 
 [node name="Sun" type="DirectionalLight2D" parent="World"]
@@ -1067,7 +1330,6 @@ tile_map_data = PackedByteArray("AAACAAYAAAACAAIAAAACAAUAAAACAAIAAAACAAQAAAACAAI
 tile_set = SubResource("TileSet_ei405")
 occlusion_enabled = false
 collision_enabled = false
-navigation_visibility_mode = 1
 
 [node name="Wizard" type="CharacterBody2D" parent="World"]
 position = Vector2(224, 384)

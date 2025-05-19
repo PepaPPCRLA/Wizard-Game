@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://chw8kaxub22yj"]
+[gd_scene load_steps=6 format=3 uid="uid://chw8kaxub22yj"]
 
-[ext_resource type="Texture2D" uid="uid://brfagytt2v72b" path="res://magic_bolt.png" id="1_tck5r"]
+[ext_resource type="Texture2D" uid="uid://dxx5bq8m1mv1m" path="res://Spell_1_0001.png" id="1_x2u3o"]
+[ext_resource type="Texture2D" uid="uid://cqabp0j3xtd2x" path="res://Spell_1_0002.png" id="2_5bpkj"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tck5r"]
 light_mode = 1
@@ -9,11 +10,14 @@ light_mode = 1
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_tck5r")
+"texture": ExtResource("1_x2u3o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_5bpkj")
 }],
 "loop": true,
 "name": &"magic",
-"speed": 5.0
+"speed": 10.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5bpkj"]
@@ -23,9 +27,11 @@ radius = 8.35
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_tck5r")
-position = Vector2(1, 0)
+rotation = 2.35619
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_tck5r")
 animation = &"magic"
+frame_progress = 0.308542
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(10, 0)

@@ -33,7 +33,6 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 
 func _physics_process(_delta: float) -> void:
-	$VisibleOnScreenEnabler2D.global_position = target.global_position
 	match intent:
 		\"idle\":
 			nav.target_position = startpos
@@ -98,6 +97,7 @@ func damage(damage):
 func _on_pathfinder_interval_timeout() -> void:
 	if !target:
 		target = $\"../Wizard\"
+	$VisibleOnScreenEnabler2D.global_position = target.global_position
 	$RayCast2D.target_position = to_local(target.position)
 	if intent == \"approach\":
 		nav.target_position = target.global_position
@@ -110,11 +110,10 @@ func _on_pathfinder_interval_timeout() -> void:
 			if $RayCast2D.is_colliding and ($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1600:
 				intent = \"idle\"
 	else:
-		await get_tree().create_timer(0.001).timeout
+		await get_tree().create_timer(0.05).timeout
 		if not abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1000 and not $RayCast2D.is_colliding() and not intent == \"dead\":
 			intent = \"approach\"
 			attack.play(\"agro\")
-			
 "
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_hqns4"]

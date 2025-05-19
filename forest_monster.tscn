@@ -113,7 +113,6 @@ func _on_pathfinder_interval_timeout() -> void:
 		if not abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1000 and not $RayCast2D.is_colliding() and not intent == \"dead\":
 			intent = \"approach\"
 			attack.play(\"agro\")
-			$\"../..\".print(\"gyatt\", true)
 "
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_hqns4"]

@@ -12,17 +12,16 @@ light_mode = 1
 [sub_resource type="GDScript" id="GDScript_hqns4"]
 resource_name = "Forest Monster Logic"
 script/source = "extends CharacterBody2D
-var health = 30
-const SPEED = 100
-var facing = 0
-var dir : float
+var health: float = 30
+const SPEED: int = 100
+var facing: int = 0
+var dir: float
 @export var target: Node = null
-@onready var nav = $NavigationAgent2D
-@onready var AniPlay = $AnimationPlayer
-@onready var movement = $MovePlayer
-@onready var attack = $AttackPlayer
-var startpos
-var damage_tween
+@onready var nav: NavigationAgent2D = $NavigationAgent2D
+@onready var AniPlay: AnimationPlayer = $AnimationPlayer
+@onready var movement: AnimationPlayer = $MovePlayer
+@onready var attack: AnimationPlayer = $AttackPlayer
+var startpos: Vector2
 var intent: String = \"idle\"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

@@ -26,16 +26,15 @@
 resource_name = "Water Monster Logic"
 script/source = "extends CharacterBody2D
 var health: float = 100
-const SPEED = 100
-var facing = 0
+const SPEED: int = 100
+var facing: int = 0
 var dir : float
 @export var target: Node = null
-@onready var nav = $NavigationAgent2D
-@onready var AniPlay = $AnimationPlayer
-@onready var attack = $AttackPlayer
-@onready var movement = $MovePlayer
-var startpos
-var damage_tween
+@onready var nav: NavigationAgent2D = $NavigationAgent2D
+@onready var AniPlay: AnimationPlayer = $AnimationPlayer
+@onready var attack: AnimationPlayer = $AttackPlayer
+@onready var movement: AnimationPlayer = $MovePlayer
+var startpos: Vector2
 var intent: String = \"idle\"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

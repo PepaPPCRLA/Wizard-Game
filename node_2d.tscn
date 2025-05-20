@@ -30,7 +30,7 @@
 [sub_resource type="GDScript" id="GDScript_ei405"]
 resource_name = "Debugger"
 script/source = "extends Control
-var debug = \"\"
+var debug: String = \"\"
 @export var global: Node = self
 
 func _process(_float) -> void:
@@ -671,19 +671,17 @@ sources/1 = SubResource("TileSetAtlasSource_nr8wp")
 resource_name = "Wizard"
 script/source = "extends CharacterBody2D
 
-var lastbounce
-const SPEED = 1800.0
-const JUMP_VELOCITY = -400.0
-var facing = 1
-var coyote_time = 0
-var sliding = -1
-var health = 100
-var checkpoint = Vector2(224, 384)
+const SPEED: int = 1800.0
+const JUMP_VELOCITY: int = -400.0
+var facing: int = 1
+var coyote_time: float = 0
+var sliding: float = -1
+var health: float = 100
+var checkpoint: Vector2 = Vector2(224, 384)
 var max_health: float = 100
-var state = \"alive\"
-var blocking = false
-var relics = 0
-@onready var global = $\"../..\"
+var state: String = \"alive\"
+var blocking: bool = false
+var relics: int = 0
 func _ready() -> void:
 	$AnimationPlayer.play(\"spawn\")
 
@@ -1309,8 +1307,8 @@ script/source = "extends Area2D
 
 var facing
 var initialSpeed
-@onready var Sprite = $\"AnimatedSprite2D\"
-@onready var Wizard = $\"../Wizard\"
+@onready var Sprite: AnimatedSprite2D = $\"AnimatedSprite2D\"
+@onready var Wizard: CharacterBody2D = $\"../Wizard\"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if not facing:
@@ -1409,10 +1407,10 @@ radius = 8.35
 resource_name = "attack 1"
 script/source = "extends Area2D
 
-var facing
-var initialSpeed
-@onready var Sprite = $\"AnimatedSprite2D\"
-@onready var Wizard = $\"../Wizard\"
+var facing: int
+var initialSpeed: Vector2
+@onready var Sprite: AnimatedSprite2D = $\"AnimatedSprite2D\"
+@onready var Wizard: CharacterBody2D = $\"../Wizard\"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$CollisionShape2D.disabled = false
@@ -1490,10 +1488,10 @@ animations = [{
 resource_name = "Water Attack"
 script/source = "extends Area2D
 
-var facing
-var initialSpeed
-@onready var Sprite = $\"AnimatedSprite2D\"
-@onready var Wizard = $\"../Wizard\"
+var facing: int = 0
+var initialSpeed: float
+@onready var Sprite: Node2D = $\"AnimatedSprite2D\"
+@onready var Wizard: Node2D = $\"../Wizard\"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$CollisionShape2D.disabled = false
@@ -1948,11 +1946,12 @@ target = NodePath("../Wizard")
 
 [node name="Spell 1" parent="World" instance=ExtResource("11_hqns4")]
 position = Vector2(367, 397)
-collision_layer = 2
+collision_layer = 0
 collision_mask = 3
 script = SubResource("GDScript_x0ka3")
 
 [node name="Spell 2" type="Area2D" parent="World"]
+collision_layer = 0
 collision_mask = 3
 script = SubResource("GDScript_cnnru")
 
@@ -1966,6 +1965,7 @@ position = Vector2(10, 0)
 shape = SubResource("CircleShape2D_5bpkj")
 
 [node name="Attack 1" type="Area2D" parent="World"]
+collision_layer = 0
 script = SubResource("GDScript_bjha6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="World/Attack 1"]
@@ -1980,6 +1980,7 @@ position = Vector2(10, 0)
 shape = SubResource("CircleShape2D_5bpkj")
 
 [node name="Attack 2" type="Area2D" parent="World"]
+collision_layer = 0
 script = SubResource("GDScript_gt76g")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="World/Attack 2"]

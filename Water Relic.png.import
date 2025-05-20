@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxx5bq8m1mv1m"
-path="res://.godot/imported/Spell_1_0001.png-e465b34593d2ce2b008043e5ae3fd365.ctex"
+uid="uid://dxai57qfa300t"
+path="res://.godot/imported/Water Relic.png-d1802d5379435bfeee46c2b01c94f2ca.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Spell_1_0001.png"
-dest_files=["res://.godot/imported/Spell_1_0001.png-e465b34593d2ce2b008043e5ae3fd365.ctex"]
+source_file="res://Water Relic.png"
+dest_files=["res://.godot/imported/Water Relic.png-d1802d5379435bfeee46c2b01c94f2ca.ctex"]
 
 [params]
 

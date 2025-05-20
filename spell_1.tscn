@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://chw8kaxub22yj"]
 
-[ext_resource type="Texture2D" uid="uid://dxx5bq8m1mv1m" path="res://Spell_1_0001.png" id="1_x2u3o"]
-[ext_resource type="Texture2D" uid="uid://cqabp0j3xtd2x" path="res://Spell_1_0002.png" id="2_5bpkj"]
+[ext_resource type="Texture2D" uid="uid://dxx5bq8m1mv1m" path="res://Spell_1_0002.png" id="1_x2u3o"]
+[ext_resource type="Texture2D" uid="uid://dxx5bq8m1mv1m" path="res://Spell_1_0002.png" id="2_5bpkj"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tck5r"]
 light_mode = 1

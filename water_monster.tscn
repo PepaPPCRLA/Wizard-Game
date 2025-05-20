@@ -95,7 +95,9 @@ func damage(damage):
 func _on_pathfinder_interval_timeout() -> void:
 	if !target:
 		target = $\"../Wizard\"
-	$VisibleOnScreenEnabler2D.global_position = target.global_position
+	if $VisibleOnScreenEnabler2D:
+		$VisibleOnScreenEnabler2D.queue_free()
+	
 	$RayCast2D.target_position = to_local(target.position)
 	if intent == \"approach\":
 		nav.target_position = target.global_position

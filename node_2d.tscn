@@ -1305,8 +1305,8 @@ _data = {
 resource_name = "Spell 1"
 script/source = "extends Area2D
 
-var facing
-var initialSpeed
+var facing: int
+var initialSpeed: int
 @onready var Sprite: AnimatedSprite2D = $\"AnimatedSprite2D\"
 @onready var Wizard: CharacterBody2D = $\"../Wizard\"
 # Called when the node enters the scene tree for the first time.
@@ -1349,8 +1349,8 @@ func _on_body_shape_entered(_body_rid: RID, body: Node2D, _body_shape_index: int
 resource_name = "Spell 2"
 script/source = "extends Area2D
 
-var facing
-var initialSpeed
+var facing: int
+var initialSpeed: int
 @onready var Sprite = $\"AnimatedSprite2D\"
 @onready var Wizard = $\"../Wizard\"
 # Called when the node enters the scene tree for the first time.

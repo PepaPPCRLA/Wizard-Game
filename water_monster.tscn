@@ -25,7 +25,7 @@
 [sub_resource type="GDScript" id="GDScript_ubrpt"]
 resource_name = "Water Monster Logic"
 script/source = "extends CharacterBody2D
-var health: float = 100
+var health: float = 60
 const SPEED: int = 100
 var facing: int = 0
 var dir : float

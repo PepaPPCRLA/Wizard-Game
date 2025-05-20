@@ -611,6 +611,7 @@ path_desired_distance = 75.0
 target_desired_distance = 75.0
 path_metadata_flags = 0
 avoidance_enabled = true
+radius = 100.0
 avoidance_mask = 3
 debug_path_custom_color = Color(1, 1, 0, 1)
 

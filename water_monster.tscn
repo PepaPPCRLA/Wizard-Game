@@ -41,22 +41,26 @@ func _ready() -> void:
 	$Timer.connect(\"timeout\",Attack2)
 	$AnimatedSprite2D.play(\"idle\")
 	startpos = global_position
+	var e = VisibleOnScreenNotifier2D.new()
+	e.name = \"e\"
+	add_child(e)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 
 func _physics_process(_delta: float) -> void:
-	match intent:
-		\"idle\":
-			nav.target_position = startpos
-			if !nav.is_navigation_finished():
-				velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
-			else:
-				velocity = Vector2.ZERO
-			$Timer.start()
-		\"approach\":
-			if !nav.is_navigation_finished():
-				velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
-			else:
-				velocity = Vector2.ZERO
+	if $e.is_on_screen() or !nav.is_navigation_finished():
+		match intent:
+			\"idle\":
+				nav.target_position = startpos
+				if !nav.is_navigation_finished():
+					velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
+				else:
+					velocity = Vector2.ZERO
+				$Timer.start()
+			\"approach\":
+				if !nav.is_navigation_finished():
+					velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
+				else:
+					velocity = Vector2.ZERO
 	if health <= 0:
 		health = 0
 		intent = \"dead\"
@@ -72,47 +76,47 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 
 func Attack2():
-	var attack2 = $\"../Attack 2\".duplicate()
-	attack2.initialSpeed = ($\"../Wizard\".global_position - self.global_position).normalized() * 750
-	attack2.position = position
-	attack2.facing = abs(velocity.x) / velocity.x
-	attack2.look_at($\"../Wizard\".global_position)
-	add_sibling(attack2)
-	attack.play(\"attack\")
+	if $e.is_on_screen():
+		var attack2 = $\"../Attack 2\".duplicate()
+		attack2.initialSpeed = ($\"../Wizard\".global_position - self.global_position).normalized() * 750
+		attack2.position = position
+		attack2.facing = abs(velocity.x) / velocity.x
+		attack2.look_at($\"../Wizard\".global_position)
+		add_sibling(attack2)
+		attack.play(\"attack\")
 
 
 
-func damage(damage):
+func damage(damage: int):
 	health -= damage
 	AniPlay.queue(\"damaged\")
 	var tween = get_tree().create_tween()
-	tween.tween_property($HealthBar/HealthBar, \"scale\", Vector2(health / 100, 1), 0.25).set_trans(Tween.TRANS_SINE)
+	tween.tween_property($HealthBar/HealthBar, \"scale\", Vector2(health / 60, 1), 0.25).set_trans(Tween.TRANS_SINE)
 	if intent == \"idle\":
 		intent = \"approach\"
 		attack.play(\"agro\")
 
 func _on_pathfinder_interval_timeout() -> void:
-	if !target:
-		target = $\"../Wizard\"
-	if $VisibleOnScreenEnabler2D:
-		$VisibleOnScreenEnabler2D.queue_free()
-	
-	$RayCast2D.target_position = to_local(target.position)
-	if intent == \"approach\":
-		nav.target_position = target.global_position
-		$\"Pathfinder Interval\".start()
-		if $RayCast2D.is_colliding():
-			$Timer.start()
-		if abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 2000:
-			intent = \"idle\"
-		else:
-			if $RayCast2D.is_colliding and ($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1600:
+	if $e.is_on_screen():
+		if !target:
+			target = $\"../Wizard\"
+		
+		$RayCast2D.target_position = to_local(target.position)
+		if intent == \"approach\":
+			nav.target_position = target.global_position
+			$\"Pathfinder Interval\".start()
+			if $RayCast2D.is_colliding():
+				$Timer.start()
+			if abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 2000:
 				intent = \"idle\"
-	else:
-		await get_tree().create_timer(0.05).timeout
-		if not abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1000 and not $RayCast2D.is_colliding() and not intent == \"dead\":
-			intent = \"approach\"
-			attack.play(\"agro\")
+			else:
+				if $RayCast2D.is_colliding and ($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1600:
+					intent = \"idle\"
+		else:
+			await get_tree().create_timer(0.05).timeout
+			if not abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1000 and not $RayCast2D.is_colliding() and not intent == \"dead\":
+				intent = \"approach\"
+				attack.play(\"agro\")
 "
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_qnoy6"]
@@ -612,7 +616,7 @@ path_desired_distance = 75.0
 target_desired_distance = 75.0
 path_metadata_flags = 0
 avoidance_enabled = true
-radius = 100.0
+radius = 500.0
 avoidance_mask = 3
 debug_path_custom_color = Color(1, 1, 0, 1)
 

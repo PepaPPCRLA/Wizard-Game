@@ -14,7 +14,7 @@ resource_name = "Forest Monster Logic"
 script/source = "extends CharacterBody2D
 var health: float = 30
 const SPEED: int = 100
-var facing: int = 0
+var facing: float = 0
 var dir: float
 @export var target: Node = null
 @onready var nav: NavigationAgent2D = $NavigationAgent2D
@@ -29,39 +29,12 @@ func _ready() -> void:
 	$AnimatedSprite2D.play(\"idle\")
 	$MovePlayer.play(\"idle\")
 	startpos = global_position
+	var e = VisibleOnScreenNotifier2D.new()
+	e.name = \"e\"
+	add_child(e)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 
 func _physics_process(_delta: float) -> void:
-	match intent:
-		\"idle\":
-			nav.target_position = startpos
-			if !nav.is_navigation_finished():
-				velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
-				animations()
-			else:
-				velocity = Vector2.ZERO
-				if !movement.current_animation == \"idle\":
-					movement.play(\"idle\")
-			$Timer.start()
-		\"approach\":
-			animations()
-			if !nav.is_navigation_finished():
-				velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
-			else:
-				velocity = Vector2.ZERO
-	if health <= 0:
-		health = 0
-		intent = \"dead\"
-		$CollisionShape2D.disabled = true
-		$HealthBar/HealthBar.visible = false
-		$Timer.stop()
-		AniPlay.stop()
-		attack.stop()
-		movement.play(\"death\")
-		await get_tree().create_timer(2).timeout
-		queue_free()
-	animations()
-	$HealthBar.position = $AnimatedSprite2D.position + Vector2(-27.5, -30)
 	move_and_slide()
 
 func animations():
@@ -74,13 +47,14 @@ func animations():
 				movement.play(\"move_left\")
 
 func Attack1():
-	var attack1 = $\"../Attack 1\".duplicate()
-	attack1.initialSpeed = ($\"../Wizard\".global_position - self.global_position).normalized() * 750
-	attack1.position = position + Vector2(0, -22)
-	attack1.facing = facing
-	attack1.look_at($\"../Wizard\".global_position)
-	add_sibling(attack1)
-	attack.play(\"attack\")
+	if $e.is_on_screen():
+		var attack1 = $\"../Attack 1\".duplicate()
+		attack1.initialSpeed = ($\"../Wizard\".global_position - self.global_position).normalized() * 750
+		attack1.position = position + Vector2(0, -22)
+		attack1.facing = facing
+		attack1.look_at($\"../Wizard\".global_position)
+		add_sibling(attack1)
+		attack.play(\"attack\")
 
 
 
@@ -94,26 +68,54 @@ func damage(damage):
 		attack.play(\"agro\")
 
 func _on_pathfinder_interval_timeout() -> void:
-	if !target:
-		target = $\"../Wizard\"
-	if $VisibleOnScreenEnabler2D:
-		$VisibleOnScreenEnabler2D.queue_free()
-	$RayCast2D.target_position = to_local(target.position)
-	if intent == \"approach\":
-		nav.target_position = target.global_position
-		$\"Pathfinder Interval\".start()
-		if $RayCast2D.is_colliding():
-			$Timer.start()
-		if abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 2000:
-			intent = \"idle\"
-		else:
-			if $RayCast2D.is_colliding and ($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1600:
+	if $e.is_on_screen() or !nav.is_navigation_finished():
+		match intent:
+			\"idle\":
+				nav.target_position = startpos
+				if !nav.is_navigation_finished():
+					velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
+					animations()
+				else:
+					velocity = Vector2.ZERO
+					if !movement.current_animation == \"idle\":
+						movement.play(\"idle\")
+				$Timer.start()
+			\"approach\":
+				animations()
+				if !nav.is_navigation_finished():
+					velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
+				else:
+						velocity = Vector2.ZERO
+		if health <= 0:
+			health = 0
+			intent = \"dead\"
+			$CollisionShape2D.disabled = true
+			$HealthBar/HealthBar.visible = false
+			$Timer.stop()
+			AniPlay.stop()
+			attack.stop()
+			movement.play(\"death\")
+			await get_tree().create_timer(2).timeout
+			queue_free()
+		$HealthBar.position = $AnimatedSprite2D.position + Vector2(-27.5, -30)
+		if !target:
+			target = $\"../Wizard\"
+		$RayCast2D.target_position = to_local(target.position)
+		if intent == \"approach\":
+			nav.target_position = target.global_position
+			$\"Pathfinder Interval\".start()
+			if $RayCast2D.is_colliding():
+				$Timer.start()
+			if abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 2000:
 				intent = \"idle\"
-	else:
-		await get_tree().create_timer(0.05).timeout
-		if not abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1000 and not $RayCast2D.is_colliding() and not intent == \"dead\":
-			intent = \"approach\"
-			attack.play(\"agro\")
+			else:
+				if $RayCast2D.is_colliding and ($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1600:
+					intent = \"idle\"
+		else:
+			await get_tree().create_timer(0.1).timeout
+			if not abs($RayCast2D.target_position.x) + abs($RayCast2D.target_position.y) > 1000 and not $RayCast2D.is_colliding() and not intent == \"dead\":
+				intent = \"approach\"
+				attack.play(\"agro\")
 "
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_hqns4"]
@@ -593,7 +595,6 @@ radius = 100.0
 neighbor_distance = 1000.0
 avoidance_layers = 2
 avoidance_mask = 2
-debug_enabled = true
 debug_path_custom_color = Color(1, 1, 0, 1)
 
 [node name="HealthBar" type="ColorRect" parent="."]
@@ -629,7 +630,7 @@ scale = Vector2(2, 2)
 texture = ExtResource("5_gava5")
 
 [node name="Pathfinder Interval" type="Timer" parent="."]
-wait_time = 0.33
+wait_time = 0.1
 autostart = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

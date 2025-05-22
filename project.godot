@@ -13,13 +13,25 @@ config_version=5
 config/name="Wizard Game"
 run/main_scene="uid://4kuhak4ql42j"
 config/features=PackedStringArray("4.4", "GL Compatibility")
-run/max_fps=60
 boot_splash/use_filter=false
+boot_splash/image="uid://c68kv2cg0cn64"
 config/icon="res://icon.svg"
+
+[debug]
+
+gdscript/warnings/shadowed_variable=0
+gdscript/warnings/shadowed_variable_base_class=0
+gdscript/warnings/shadowed_global_identifier=0
 
 [display]
 
 window/size/mode=3
+mouse_cursor/custom_image="uid://ca58cotvw4d4s"
+window/max_fps=60
+window/warnings/untyped_declaration=0
+window/warnings/shadowed_global_identifier=1
+window/warnings/shadowed_variable_base_class=1
+window/warnings/shadowed_variable=1
 
 [input]
 
@@ -103,5 +115,5 @@ textures/light_projectors/filter=0
 global_illumination/sdfgi/probe_ray_count=0
 global_illumination/sdfgi/frames_to_converge=0
 global_illumination/sdfgi/frames_to_update_lights=4
-environment/defaults/default_clear_color=Color(0.199584, 0.318916, 0.375274, 1)
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)
 2d/snap/snap_2d_transforms_to_pixel=true

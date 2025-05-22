@@ -35,7 +35,37 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 
 func _physics_process(_delta: float) -> void:
-	move_and_slide()
+	if $e.is_on_screen() or !nav.is_navigation_finished():
+		match intent:
+			\"idle\":
+				nav.target_position = startpos
+				if !nav.is_navigation_finished():
+					velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
+					animations()
+				else:
+					velocity = Vector2.ZERO
+					if !movement.current_animation == \"idle\":
+						movement.play(\"idle\")
+				$Timer.start()
+			\"approach\":
+				animations()
+				if !nav.is_navigation_finished():
+					velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
+				else:
+						velocity = Vector2.ZERO
+		if health <= 0:
+			health = 0
+			intent = \"dead\"
+			$CollisionShape2D.disabled = true
+			$HealthBar/HealthBar.visible = false
+			$Timer.stop()
+			AniPlay.stop()
+			attack.stop()
+			movement.play(\"death\")
+			await get_tree().create_timer(2).timeout
+			queue_free()
+		$HealthBar.position = $AnimatedSprite2D.position + Vector2(-27.5, -30)
+		move_and_slide()
 
 func animations():
 	if not (velocity.x / abs(velocity.x)) == facing:
@@ -69,35 +99,6 @@ func damage(damage):
 
 func _on_pathfinder_interval_timeout() -> void:
 	if $e.is_on_screen() or !nav.is_navigation_finished():
-		match intent:
-			\"idle\":
-				nav.target_position = startpos
-				if !nav.is_navigation_finished():
-					velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
-					animations()
-				else:
-					velocity = Vector2.ZERO
-					if !movement.current_animation == \"idle\":
-						movement.play(\"idle\")
-				$Timer.start()
-			\"approach\":
-				animations()
-				if !nav.is_navigation_finished():
-					velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
-				else:
-						velocity = Vector2.ZERO
-		if health <= 0:
-			health = 0
-			intent = \"dead\"
-			$CollisionShape2D.disabled = true
-			$HealthBar/HealthBar.visible = false
-			$Timer.stop()
-			AniPlay.stop()
-			attack.stop()
-			movement.play(\"death\")
-			await get_tree().create_timer(2).timeout
-			queue_free()
-		$HealthBar.position = $AnimatedSprite2D.position + Vector2(-27.5, -30)
 		if !target:
 			target = $\"../Wizard\"
 		$RayCast2D.target_position = to_local(target.position)
@@ -630,7 +631,7 @@ scale = Vector2(2, 2)
 texture = ExtResource("5_gava5")
 
 [node name="Pathfinder Interval" type="Timer" parent="."]
-wait_time = 0.1
+wait_time = 0.3
 autostart = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

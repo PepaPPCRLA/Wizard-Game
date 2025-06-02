@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://chw8kaxub22yj"]
 
-[ext_resource type="Texture2D" uid="uid://dxx5bq8m1mv1m" path="res://Spell_1_0002.png" id="1_x2u3o"]
 [ext_resource type="Texture2D" uid="uid://dxx5bq8m1mv1m" path="res://Spell_1_0002.png" id="2_5bpkj"]
+[ext_resource type="Texture2D" uid="uid://df3vk2i7ic7da" path="res://glow.png" id="2_x2u3o"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tck5r"]
 light_mode = 1
@@ -10,7 +10,7 @@ light_mode = 1
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_x2u3o")
+"texture": ExtResource("2_5bpkj")
 }, {
 "duration": 1.0,
 "texture": ExtResource("2_5bpkj")
@@ -32,6 +32,16 @@ scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_tck5r")
 animation = &"magic"
 frame_progress = 0.858914
+
+[node name="PointLight2D" type="PointLight2D" parent="AnimatedSprite2D"]
+color = Color(0.423529, 0.937255, 0.968627, 1)
+energy = 0.7
+texture = ExtResource("2_x2u3o")
+
+[node name="Sprite2D" type="Sprite2D" parent="AnimatedSprite2D/PointLight2D"]
+modulate = Color(0.423529, 0.937255, 0.968627, 0.568627)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_x2u3o")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(10, 0)

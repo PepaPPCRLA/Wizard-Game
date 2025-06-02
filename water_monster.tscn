@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://lyredes2odvn"]
+[gd_scene load_steps=37 format=3 uid="uid://lyredes2odvn"]
 
 [ext_resource type="Texture2D" uid="uid://be27nqqxkaeue" path="res://Water Monster_0001.png" id="1_osn40"]
 [ext_resource type="Texture2D" uid="uid://13xjt1rioqaq" path="res://Water Monster_0002.png" id="2_hqu4q"]
@@ -20,7 +20,8 @@
 [ext_resource type="Texture2D" uid="uid://det63r67rfaon" path="res://Water Monster_0018.png" id="18_cya65"]
 [ext_resource type="Texture2D" uid="uid://drcpgu1yluuxf" path="res://Water Monster_0019.png" id="19_gehkn"]
 [ext_resource type="Texture2D" uid="uid://pl4ws4bord1k" path="res://Water Monster_0020.png" id="20_hlmk3"]
-[ext_resource type="Texture2D" uid="uid://7m74utn0yrsw" path="res://Agromation Mark.png" id="21_ede2w"]
+[ext_resource type="Script" uid="uid://dvk84opxjevpp" path="res://animated_sprite_2d.gd" id="21_hqu4q"]
+[ext_resource type="Script" uid="uid://bwg3rj6pptpi5" path="res://health_bar.gd" id="22_tw2go"]
 
 [sub_resource type="GDScript" id="GDScript_ubrpt"]
 resource_name = "Water Monster Logic"
@@ -188,6 +189,12 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_8l88r"]
 radius = 25.0
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_osn40"]
+light_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_hqu4q"]
+light_mode = 1
+
 [sub_resource type="Animation" id="Animation_x0ka3"]
 length = 0.001
 tracks/0/type = "value"
@@ -274,54 +281,6 @@ tracks/6/keys = {
 "update": 0,
 "values": [Vector2(-26, -35)]
 }
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("Agro:visible")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/8/type = "value"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("Agro:modulate")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("Agro:position")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-48, -8)]
-}
-tracks/10/type = "value"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("Agro:scale")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(2, 2)]
-}
 
 [sub_resource type="Animation" id="Animation_qu7as"]
 resource_name = "agro"
@@ -337,54 +296,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 3.24901, 1),
 "update": 0,
 "values": [Vector2(1.8, 1.8), Vector2(1.8, 2.5), Vector2(1.8, 1.8)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Agro:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.666667),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Agro:scale")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.733333),
-"transitions": PackedFloat32Array(0.378929, 1),
-"update": 0,
-"values": [Vector2(2, 2), Vector2(3, 3)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Agro:modulate")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.666667),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Agro:position")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.666667),
-"transitions": PackedFloat32Array(0.378929, 1),
-"update": 0,
-"values": [Vector2(0, -50), Vector2(0, -100)]
 }
 
 [sub_resource type="Animation" id="Animation_0h7mo"]
@@ -583,13 +494,13 @@ _data = {
 [node name="Water Monster" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 2
+motion_mode = 1
 script = SubResource("GDScript_ubrpt")
 
 [node name="Timer" type="Timer" parent="."]
 autostart = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-light_mask = 0
 use_parent_material = true
 position = Vector2(0, -10)
 scale = Vector2(1.8, 1.8)
@@ -597,6 +508,7 @@ sprite_frames = SubResource("SpriteFrames_qnoy6")
 animation = &"idle"
 frame_progress = 0.667306
 offset = Vector2(0, 5)
+script = ExtResource("21_hqu4q")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -10)
@@ -619,8 +531,10 @@ avoidance_mask = 3
 debug_path_custom_color = Color(1, 1, 0, 1)
 
 [node name="HealthBar" type="ColorRect" parent="."]
+light_mask = 0
 z_index = 100
 texture_filter = 1
+material = SubResource("CanvasItemMaterial_osn40")
 offset_left = -26.0
 offset_top = -35.0
 offset_right = 30.0
@@ -628,11 +542,14 @@ offset_bottom = -32.32
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.560784, 0.176471, 0, 1)
+script = ExtResource("22_tw2go")
 metadata/_edit_use_anchors_ = true
 
 [node name="HealthBar" type="ColorRect" parent="HealthBar"]
+light_mask = 0
 z_index = 1
 texture_filter = 1
+material = SubResource("CanvasItemMaterial_hqu4q")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -642,13 +559,6 @@ grow_vertical = 2
 scale = Vector2(1, 1.515)
 color = Color(0.560784, 1, 0, 1)
 metadata/_edit_use_anchors_ = true
-
-[node name="Agro" type="Sprite2D" parent="."]
-visible = false
-use_parent_material = true
-position = Vector2(-48, -8)
-scale = Vector2(2, 2)
-texture = ExtResource("21_ede2w")
 
 [node name="Pathfinder Interval" type="Timer" parent="."]
 wait_time = 0.3

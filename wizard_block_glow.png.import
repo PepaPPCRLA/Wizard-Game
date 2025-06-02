@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://7m74utn0yrsw"
-path="res://.godot/imported/Agromation Mark.png-30860bf2954482e0d763ce3a60c61c93.ctex"
+uid="uid://xg0ru3dr63qw"
+path="res://.godot/imported/wizard_block_glow.png-69d492734064298167ce1fac1814443b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Agromation Mark.png"
-dest_files=["res://.godot/imported/Agromation Mark.png-30860bf2954482e0d763ce3a60c61c93.ctex"]
+source_file="res://wizard_block_glow.png"
+dest_files=["res://.godot/imported/wizard_block_glow.png-69d492734064298167ce1fac1814443b.ctex"]
 
 [params]
 

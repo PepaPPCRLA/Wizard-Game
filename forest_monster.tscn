@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://devxyhnuigd0c"]
+[gd_scene load_steps=24 format=3 uid="uid://devxyhnuigd0c"]
 
 [ext_resource type="Texture2D" uid="uid://bmn0cm8b48wjj" path="res://Forest Monster idle_0001.png" id="1_g6q7d"]
 [ext_resource type="Texture2D" uid="uid://bquwd8cgiosd" path="res://Forest Monster idle_0002.png" id="2_uw6a2"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://ch30u5faqvyl8" path="res://Forest Monster idle_0004.png" id="4_hru4h"]
 [ext_resource type="Script" uid="uid://dvk84opxjevpp" path="res://animated_sprite_2d.gd" id="5_hd58r"]
 [ext_resource type="Texture2D" uid="uid://df3vk2i7ic7da" path="res://glow.png" id="5_uw6a2"]
+[ext_resource type="Script" uid="uid://b5qml01wtwtmm" path="res://point_light_2d.gd" id="7_gava5"]
 [ext_resource type="Script" uid="uid://bwg3rj6pptpi5" path="res://health_bar.gd" id="7_hru4h"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ei405"]
@@ -25,6 +26,7 @@ var dir: float
 @onready var attack: AnimationPlayer = $AttackPlayer
 var startpos: Vector2
 var intent: String = \"idle\"
+var enemy: String = \"Forest Monster\"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$Timer.connect(\"timeout\",Attack1)
@@ -51,6 +53,7 @@ func _physics_process(_delta: float) -> void:
 				$Timer.start()
 			\"approach\":
 				animations()
+				$AnimatedSprite2D.offset *= Vector2(0.95, 0.95)
 				if !nav.is_navigation_finished():
 					velocity = to_local(nav.get_next_path_position()).normalized() * SPEED
 				else:
@@ -167,7 +170,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, -10)]
+"values": [Vector2(0, 0)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -196,38 +199,26 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("HealthBar:scale")
+tracks/4/path = NodePath("AnimatedSprite2D/PointLight2D:modulate")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(1, 1)]
+"values": [Color(1, 1, 1, 1)]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("HealthBar:rotation")
+tracks/5/path = NodePath("AnimatedSprite2D:offset")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [0.0]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("HealthBar:position")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-26, -35)]
+"values": [Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_1fr6y"]
@@ -365,34 +356,34 @@ tracks/6/keys = {
 "update": 0,
 "values": [0.0, -1.5708]
 }
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("AnimatedSprite2D/PointLight2D:modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.633333),
+"transitions": PackedFloat32Array(2.21914, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_7vxoj"]
 resource_name = "idle"
 length = 3.0
-loop_mode = 2
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite2D:rotation")
+tracks/0/path = NodePath("AnimatedSprite2D:offset")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(1.16667),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 1.53333, 2.96667),
+"transitions": PackedFloat32Array(-2, -2, 2.21914),
 "update": 0,
-"values": [0.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("AnimatedSprite2D:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 1.5, 3),
-"transitions": PackedFloat32Array(-2, -2, -2),
-"update": 0,
-"values": [Vector2(0, -10), Vector2(0, -30), Vector2(0, -10)]
+"values": [Vector2(0, 0), Vector2(0, -10), Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_nr8wp"]
@@ -462,11 +453,9 @@ autostart = true
 physics_interpolation_mode = 1
 light_mask = 0
 use_parent_material = true
-position = Vector2(0, -10)
 scale = Vector2(1.8, 1.8)
 sprite_frames = SubResource("SpriteFrames_hqns4")
 animation = &"idle"
-offset = Vector2(0, 10)
 script = ExtResource("5_hd58r")
 
 [node name="PointLight2D" type="PointLight2D" parent="AnimatedSprite2D"]
@@ -474,6 +463,7 @@ position = Vector2(0, 5.55556)
 color = Color(0.27451, 0.984314, 0.745098, 1)
 energy = 0.9
 texture = ExtResource("5_uw6a2")
+script = ExtResource("7_gava5")
 
 [node name="Sprite2D" type="Sprite2D" parent="AnimatedSprite2D/PointLight2D"]
 modulate = Color(0.409833, 0.994182, 0.402968, 0.52549)
@@ -482,6 +472,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("5_uw6a2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("CircleShape2D_x0ka3")
 
 [node name="RayCast2D" type="RayCast2D" parent="."]

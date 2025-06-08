@@ -1,4 +1,4 @@
-[gd_scene load_steps=152 format=4 uid="uid://4kuhak4ql42j"]
+[gd_scene load_steps=157 format=4 uid="uid://4kuhak4ql42j"]
 
 [ext_resource type="Texture2D" uid="uid://ca58cotvw4d4s" path="res://Spell_1_ui.png" id="2_fs4d3"]
 [ext_resource type="Texture2D" uid="uid://dlyw7ftdhbgko" path="res://Wood Tileset.png" id="2_ir8iy"]
@@ -17,6 +17,8 @@
 [ext_resource type="Texture2D" uid="uid://dxai57qfa300t" path="res://Water Relic.png" id="8_gt76g"]
 [ext_resource type="Texture2D" uid="uid://pijltl8ao27h" path="res://wizard_slide.png" id="8_ta5nu"]
 [ext_resource type="Texture2D" uid="uid://1da73sbldd78" path="res://wizard_wallsliding.png" id="9_flf07"]
+[ext_resource type="Texture2D" uid="uid://8btcg52askve" path="res://Forest Relic_n.png" id="10_q5dlx"]
+[ext_resource type="Texture2D" uid="uid://rugnlqrt33rh" path="res://Forest Relic_s.png" id="11_c4wnb"]
 [ext_resource type="PackedScene" uid="uid://chw8kaxub22yj" path="res://spell_1.tscn" id="11_hqns4"]
 [ext_resource type="Texture2D" uid="uid://b0113cl7uiyah" path="res://lava_glow.png" id="12_2hxjc"]
 [ext_resource type="PackedScene" uid="uid://devxyhnuigd0c" path="res://forest_monster.tscn" id="12_e8dv2"]
@@ -670,6 +672,14 @@ sources/3 = SubResource("TileSetAtlasSource_2hxjc")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e8dv2"]
 size = Vector2(72, 43)
 
+[sub_resource type="CanvasTexture" id="CanvasTexture_7plk7"]
+diffuse_texture = ExtResource("7_ei405")
+normal_texture = ExtResource("10_q5dlx")
+specular_texture = ExtResource("11_c4wnb")
+specular_color = Color(0.779291, 0.779291, 0.779291, 1)
+specular_shininess = 0.38
+texture_filter = 1
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2nhjh"]
 size = Vector2(37, 116)
 
@@ -942,7 +952,7 @@ func _physics_process(delta: float) -> void:
 				else:
 					$AnimatedSprite2D.flip_h = true
 			$AnimatedSprite2D.play(\"slide\")
-		if $\"Force Sliding Req\".is_colliding() and is_on_floor():
+		if $\"Force Sliding Req\".is_colliding():
 			if sliding <= 0.01:
 				sliding = 0.01
 		if sliding > 0:
@@ -1166,6 +1176,8 @@ anim_speed_max = 16.0
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2nhjh"]
 radius = 20.0
 height = 118.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fshgd"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_bjha6"]
 animations = [{
@@ -1651,6 +1663,9 @@ func _on_body_shape_entered(_body_rid: RID, body: Node2D, _body_shape_index: int
 			queue_free()
 "
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_q5dlx"]
+light_mode = 1
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_4ccxe"]
 animations = [{
 "frames": [{
@@ -2100,9 +2115,9 @@ scale = Vector2(0.25, 0.25)
 shape = SubResource("RectangleShape2D_e8dv2")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/Foreground/Forest Relic"]
-position = Vector2(1.00065, -7.62939e-06)
+position = Vector2(-0.000326157, -4.00001)
 scale = Vector2(4, 4)
-texture = ExtResource("7_ei405")
+texture = SubResource("CanvasTexture_7plk7")
 
 [node name="Water Relic" type="Area2D" parent="World/Foreground"]
 position = Vector2(9101.25, 265.5)
@@ -2210,9 +2225,10 @@ shape = SubResource("CapsuleShape2D_2nhjh")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="World/Wizard"]
 texture_filter = 1
+material = SubResource("ShaderMaterial_fshgd")
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_bjha6")
-animation = &"slide"
+animation = &"idle"
 script = ExtResource("23_ornx7")
 
 [node name="Lights" type="AnimatedSprite2D" parent="World/Wizard"]
@@ -2308,6 +2324,7 @@ script = SubResource("GDScript_bjha6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="World/Attack 1"]
 texture_filter = 1
+material = SubResource("CanvasItemMaterial_q5dlx")
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_4ccxe")
 animation = &"Leaf Attack"

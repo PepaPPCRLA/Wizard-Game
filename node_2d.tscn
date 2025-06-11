@@ -661,6 +661,7 @@ texture = ExtResource("8_1fr6y")
 
 [sub_resource type="TileSet" id="TileSet_fs4d3"]
 occlusion_layer_0/light_mask = 1
+occlusion_layer_0/sdf_collision = true
 physics_layer_0/collision_layer = 3
 sources/2 = SubResource("TileSetAtlasSource_rjqkl")
 sources/0 = SubResource("TileSetAtlasSource_k73cj")
@@ -671,10 +672,8 @@ sources/3 = SubResource("TileSetAtlasSource_2hxjc")
 size = Vector2(72, 43)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_540hr"]
-load_path = "res://.godot/imported/Forest Relic_n.png-2d3a64a21ffb3f24b85d49432db8c719.ctex"
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6ip5v"]
-load_path = "res://.godot/imported/Forest Relic_s.png-a294075aa502653175d60bc9d4a559a3.ctex"
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_7plk7"]
 diffuse_texture = ExtResource("7_ei405")
@@ -1513,6 +1512,7 @@ script/source = "extends Area2D
 
 var facing: int
 var initialSpeed: int
+var exploded: bool = false
 @onready var Sprite: AnimatedSprite2D = $\"AnimatedSprite2D\"
 @onready var Wizard: CharacterBody2D = $\"../Wizard\"
 # Called when the node enters the scene tree for the first time.
@@ -1530,7 +1530,7 @@ func _ready() -> void:
 	get_tree().create_tween().tween_property(Sprite, \"modulate:a\", 1, 0.25)
 	await get_tree().create_timer(5).timeout
 	if not facing == -1000:
-		queue_free()
+		explode()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -1541,14 +1541,25 @@ func _process(delta: float) -> void:
 		visible = false
 
 func move(delta):
-	position.x += (initialSpeed + 750) * delta * facing
+	if !exploded:
+		position.x += (initialSpeed + 750) * delta * facing
 
 
 func _on_body_shape_entered(_body_rid: RID, body: Node2D, _body_shape_index: int, _local_shape_index: int) -> void:
-		if not body == Wizard and not facing == -1000:
+		if not body == Wizard and not facing == -1000 and !exploded:
 			if not body == $\"../Foreground\":
 				body.damage(10)
-			queue_free()
+			explode()
+
+func explode():
+	if !exploded:
+		exploded = true
+		$AnimatedSprite2D.queue_free()
+		$CollisionShape2D.queue_free()
+		$Explosion.position *= facing
+		$Explosion.emitting = true
+		await get_tree().create_timer(5).timeout
+		queue_free()
 "
 
 [sub_resource type="GDScript" id="GDScript_cnnru"]

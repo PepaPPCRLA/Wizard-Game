@@ -1,5 +1,8 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
-/export*
-libgodot_rapier.linux.x86_64-unknown-linux-gnu.so
+/export*/
+/*Linux.x86_64/
+/*.exe/
+
+

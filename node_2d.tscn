@@ -17,8 +17,6 @@
 [ext_resource type="Texture2D" uid="uid://dxai57qfa300t" path="res://Water Relic.png" id="8_gt76g"]
 [ext_resource type="Texture2D" uid="uid://pijltl8ao27h" path="res://wizard_slide.png" id="8_ta5nu"]
 [ext_resource type="Texture2D" uid="uid://1da73sbldd78" path="res://wizard_wallsliding.png" id="9_flf07"]
-[ext_resource type="Texture2D" uid="uid://8btcg52askve" path="res://Forest Relic_n.png" id="10_q5dlx"]
-[ext_resource type="Texture2D" uid="uid://rugnlqrt33rh" path="res://Forest Relic_s.png" id="11_c4wnb"]
 [ext_resource type="PackedScene" uid="uid://chw8kaxub22yj" path="res://spell_1.tscn" id="11_hqns4"]
 [ext_resource type="Texture2D" uid="uid://b0113cl7uiyah" path="res://lava_glow.png" id="12_2hxjc"]
 [ext_resource type="PackedScene" uid="uid://devxyhnuigd0c" path="res://forest_monster.tscn" id="12_e8dv2"]
@@ -672,10 +670,16 @@ sources/3 = SubResource("TileSetAtlasSource_2hxjc")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e8dv2"]
 size = Vector2(72, 43)
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_540hr"]
+load_path = "res://.godot/imported/Forest Relic_n.png-2d3a64a21ffb3f24b85d49432db8c719.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6ip5v"]
+load_path = "res://.godot/imported/Forest Relic_s.png-a294075aa502653175d60bc9d4a559a3.ctex"
+
 [sub_resource type="CanvasTexture" id="CanvasTexture_7plk7"]
 diffuse_texture = ExtResource("7_ei405")
-normal_texture = ExtResource("10_q5dlx")
-specular_texture = ExtResource("11_c4wnb")
+normal_texture = SubResource("CompressedTexture2D_540hr")
+specular_texture = SubResource("CompressedTexture2D_6ip5v")
 specular_color = Color(0.779291, 0.779291, 0.779291, 1)
 specular_shininess = 0.38
 texture_filter = 1

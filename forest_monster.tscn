@@ -507,7 +507,6 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("5_uw6a2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
 shape = SubResource("CircleShape2D_x0ka3")
 
 [node name="RayCast2D" type="RayCast2D" parent="."]

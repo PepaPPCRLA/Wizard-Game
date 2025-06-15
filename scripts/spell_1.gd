@@ -33,6 +33,8 @@ func _physics_process(delta: float) -> void:
 			$"Hit Detection Improver".target_position = last_position - global_position
 			last_position = $"Hit Detection Improver".global_position
 			$"Hit Detection Improver".enabled = true
+			if $"Hit Detection Improver".is_colliding():
+				print("uss")
 			if $"Hit Detection Improver".is_colliding() and $"Hit Detection Improver".get_collider() != $"../Wizard":
 				if $"Hit Detection Improver".get_collider() != $"../Foreground":
 					$"Hit Detection Improver".get_collider().damage(10)

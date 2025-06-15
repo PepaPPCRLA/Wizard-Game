@@ -2077,7 +2077,6 @@ columns = 4
 custom_minimum_size = Vector2(314, 100)
 layout_mode = 2
 focus_mode = 0
-button_pressed = true
 text = "Debugger"
 
 [node name="TPS Picker" type="OptionButton" parent="CanvasLayer/Settings/Panel/GridContainer"]

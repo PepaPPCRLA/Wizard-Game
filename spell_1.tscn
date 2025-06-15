@@ -92,10 +92,12 @@ visible = false
 position = Vector2(10, 0)
 enabled = false
 target_position = Vector2(0, 0)
+collision_mask = 3
 hit_from_inside = true
 
 [node name="Hit Detection Improver" type="RayCast2D" parent="."]
 position = Vector2(10, 0)
 enabled = false
 target_position = Vector2(0, 0)
+collision_mask = 3
 hit_from_inside = true

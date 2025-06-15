@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://chw8kaxub22yj"]
+[gd_scene load_steps=10 format=3 uid="uid://chw8kaxub22yj"]
 
-[ext_resource type="Script" uid="uid://dvk84opxjevpp" path="res://animated_sprite_2d.gd" id="2_4ccxe"]
-[ext_resource type="Texture2D" uid="uid://dxx5bq8m1mv1m" path="res://Spell_1_0002.png" id="2_5bpkj"]
-[ext_resource type="Texture2D" uid="uid://df3vk2i7ic7da" path="res://glow.png" id="2_x2u3o"]
+[ext_resource type="Script" uid="uid://dpdgik50nlf8t" path="res://scripts/spell_1.gd" id="1_4ccxe"]
+[ext_resource type="Script" uid="uid://dvk84opxjevpp" path="res://scripts/animated_sprite_2d.gd" id="2_4ccxe"]
+[ext_resource type="Texture2D" uid="uid://dxx5bq8m1mv1m" path="res://textures/Spell_1_0002.png" id="2_5bpkj"]
+[ext_resource type="Texture2D" uid="uid://df3vk2i7ic7da" path="res://textures/glow.png" id="2_x2u3o"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tck5r"]
 light_mode = 1
@@ -47,6 +48,7 @@ radius = 8.35
 
 [node name="Spell 1" type="Area2D"]
 collision_layer = 0
+script = ExtResource("1_4ccxe")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_tck5r")
@@ -70,7 +72,6 @@ texture = ExtResource("2_x2u3o")
 [node name="Explosion" type="GPUParticles2D" parent="."]
 modulate = Color(0.478431, 0.941176, 0.945098, 1)
 material = SubResource("CanvasItemMaterial_x2u3o")
-position = Vector2(-20, -2)
 emitting = false
 amount = 100
 lifetime = 5.0
@@ -84,7 +85,17 @@ process_material = SubResource("ParticleProcessMaterial_4ccxe")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(10, 0)
 shape = SubResource("CircleShape2D_5bpkj")
+disabled = true
 
-[node name="Tickrate Fix" type="RayCast2D" parent="CollisionShape2D"]
+[node name="Hit Prediction" type="RayCast2D" parent="."]
+visible = false
+position = Vector2(10, 0)
+enabled = false
+target_position = Vector2(0, 0)
+hit_from_inside = true
+
+[node name="Hit Detection Improver" type="RayCast2D" parent="."]
+position = Vector2(10, 0)
+enabled = false
 target_position = Vector2(0, 0)
 hit_from_inside = true

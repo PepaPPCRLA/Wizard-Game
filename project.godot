@@ -15,7 +15,7 @@ run/main_scene="uid://4kuhak4ql42j"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 boot_splash/use_filter=false
 boot_splash/image="uid://c68kv2cg0cn64"
-config/icon="res://icon.svg"
+config/icon="res://textures/icon.svg"
 
 [debug]
 
@@ -93,6 +93,16 @@ Pause={
 "Spell 2"={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"location":0,"echo":false,"script":null)
+]
+}
+Freeze={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(244, 29),"global_position":Vector2(253, 77),"factor":1.0,"button_index":9,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+"Speed Change Toggle"={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(167, 23),"global_position":Vector2(176, 71),"factor":1.0,"button_index":8,"canceled":false,"pressed":true,"double_click":false,"script":null)
 ]
 }
 

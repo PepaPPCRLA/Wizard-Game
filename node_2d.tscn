@@ -36,7 +36,6 @@
 [ext_resource type="Script" uid="uid://df52e83y66nco" path="res://scripts/lights.gd" id="24_cnnru"]
 [ext_resource type="Texture2D" uid="uid://dceqfiyaf83uf" path="res://textures/Lava Monster Projectile_0005.png" id="28_4qosj"]
 [ext_resource type="PackedScene" uid="uid://yh8xbbcfwgny" path="res://lava_monster.tscn" id="30_2u7jv"]
-[ext_resource type="Script" uid="uid://1bw2quy4e4l7" path="res://animated_sprite_2d.gd" id="34_6ip5v"]
 
 [sub_resource type="GDScript" id="GDScript_ei405"]
 resource_name = "Debugger"
@@ -1793,6 +1792,10 @@ animations = [{
 "speed": 20.0
 }]
 
+[sub_resource type="GDScript" id="GDScript_540hr"]
+script/source = "extends \"res://scripts/animated_sprite_2d.gd\"
+"
+
 [sub_resource type="GDScript" id="GDScript_gt76g"]
 resource_name = "Water Attack"
 script/source = "extends Area2D
@@ -2199,6 +2202,7 @@ popup/item_5/id = 15
 custom_minimum_size = Vector2(314, 100)
 layout_mode = 2
 focus_mode = 0
+button_pressed = true
 text = "Vsync"
 
 [node name="GameSpeed" type="SpinBox" parent="CanvasLayer/Settings/Panel/GridContainer"]
@@ -2506,7 +2510,7 @@ scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_4ccxe")
 animation = &"Leaf Attack"
 frame_progress = 0.652978
-script = ExtResource("34_6ip5v")
+script = SubResource("GDScript_540hr")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Attack 1"]
 position = Vector2(10, 0)

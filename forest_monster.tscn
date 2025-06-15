@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://ch30u5faqvyl8" path="res://textures/Forest Monster idle_0004.png" id="4_hru4h"]
 [ext_resource type="Script" uid="uid://dvk84opxjevpp" path="res://scripts/animated_sprite_2d.gd" id="5_hd58r"]
 [ext_resource type="Texture2D" uid="uid://df3vk2i7ic7da" path="res://textures/glow.png" id="5_uw6a2"]
-[ext_resource type="Script" uid="uid://4cdo2s3lian6" path="res://point_light_2d.gd" id="7_gava5"]
+[ext_resource type="Script" uid="uid://4cdo2s3lian6" path="res://scripts/point_light_2d.gd" id="7_gava5"]
 [ext_resource type="Script" uid="uid://bwg3rj6pptpi5" path="res://scripts/health_bar.gd" id="7_hru4h"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ei405"]

@@ -71,6 +71,7 @@ texture = ExtResource("2_x2u3o")
 
 [node name="Explosion" type="GPUParticles2D" parent="."]
 modulate = Color(0.478431, 0.941176, 0.945098, 1)
+z_index = 1
 material = SubResource("CanvasItemMaterial_x2u3o")
 emitting = false
 amount = 100

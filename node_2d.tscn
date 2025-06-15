@@ -70,12 +70,30 @@ func _process(_float) -> void:
 		\"Sliding: \" + str(round($World/Wizard.sliding * 100) / 100) + \"\\nOutput: \" + str(debug)
 	
 	if Input.is_action_just_pressed(\"Pause\"):
-		if $CanvasLayer/Settings.visible == false:
-			$CanvasLayer/Settings.visible = true
-			get_tree().paused = true
-		else:
-			$CanvasLayer/Settings.visible = false
-			get_tree().paused = false
+		toggle_pause()
+		
+
+func toggle_pause():
+	if get_tree().paused == false:
+		pause()
+	else:
+		resume()
+
+func pause():
+	$CanvasLayer/Settings.visible = true
+	var tween = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",1,0.1 * Engine.time_scale)
+	get_tree().paused = true
+	
+func resume():
+	var tween = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",0,0.1 * Engine.time_scale)
+	get_tree().paused = false
+	$Timer.start()
+
+func _animation_end() -> void:
+	$CanvasLayer/Settings.visible = false
+
+func _on_close_pressed() -> void:
+	resume()
 
 func print(output,important: bool = false):
 	if important == true:
@@ -121,28 +139,6 @@ func load_data():
 		dev_mode = false
 		print(\"Nothing Saved\")
 
-func _on_close_pressed() -> void:
-	if $CanvasLayer/Settings.visible == false:
-		if $CanvasLayer/Debugger.visible:
-			$CanvasLayer/Settings/Panel/Debugger/CheckButton.button_pressed = true
-		else:
-			$CanvasLayer/Settings/Panel/Debugger/CheckButton.button_pressed = false
-		$CanvasLayer/Settings.visible = true
-		get_tree().paused = true
-	else:
-		$CanvasLayer/Settings.visible = false
-		get_tree().paused = false
-
-
-
-func _on_debug_toggled() -> void:
-	if $CanvasLayer/Debugger.visible:
-		$CanvasLayer/Debugger.visible = false
-	else:
-		$CanvasLayer/Debugger.visible = true
-	save()
-
-
 func _on_tps_picker_item_selected(index: int) -> void:
 	Engine.physics_ticks_per_second = $\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_id(index)
 	save()
@@ -150,6 +146,25 @@ func _on_tps_picker_item_selected(index: int) -> void:
 
 func _on_game_speed_value_changed(value: float) -> void:
 	Engine.time_scale = $CanvasLayer/Settings/Panel/GridContainer/GameSpeed.value
+
+
+func _on_vsync_toggled(toggled_on: bool) -> void:
+	if toggled_on == true:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+	else:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+
+func _on_animation_2_end() -> void:
+	$CanvasLayer/Debugger.visible = false
+
+func _on_debugger_toggled(toggled_on: bool) -> void:
+	if toggled_on == false:
+		var tween = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.1 * Engine.time_scale)
+		$Timer2.start()
+	else:
+		$CanvasLayer/Debugger.visible = true
+		var tween = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",1,0.1 * Engine.time_scale)
+	save()
 "
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fs4d3"]
@@ -2100,7 +2115,7 @@ libraries = {
 }
 
 [node name="Settings" type="PanelContainer" parent="CanvasLayer"]
-visible = false
+modulate = Color(1, 1, 1, 0)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -2712,9 +2727,20 @@ position = Vector2(51251, 5103)
 [node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
 environment = SubResource("Environment_kq1c5")
 
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+ignore_time_scale = true
+
+[node name="Timer2" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+ignore_time_scale = true
+
 [connection signal="pressed" from="CanvasLayer/Settings/Panel/Back/Close" to="." method="_on_close_pressed"]
-[connection signal="pressed" from="CanvasLayer/Settings/Panel/GridContainer/Debugger" to="." method="_on_debug_toggled"]
+[connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/Debugger" to="." method="_on_debugger_toggled"]
 [connection signal="item_selected" from="CanvasLayer/Settings/Panel/GridContainer/TPS Picker" to="." method="_on_tps_picker_item_selected"]
+[connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/Vsync" to="." method="_on_vsync_toggled"]
 [connection signal="value_changed" from="CanvasLayer/Settings/Panel/GridContainer/GameSpeed" to="." method="_on_game_speed_value_changed"]
 [connection signal="body_entered" from="World/Foreground/Forest Relic" to="World/Wizard" method="_on_forest_relic_body_entered"]
 [connection signal="body_entered" from="World/Foreground/Water Relic" to="World/Wizard" method="_on_water_relic_body_entered"]
@@ -2727,3 +2753,5 @@ environment = SubResource("Environment_kq1c5")
 [connection signal="body_shape_entered" from="World/Attack 1" to="World/Attack 1" method="_on_body_shape_entered"]
 [connection signal="body_shape_entered" from="World/Attack 2" to="World/Attack 2" method="_on_body_shape_entered"]
 [connection signal="body_shape_entered" from="World/Attack 3" to="World/Attack 3" method="_on_body_shape_entered"]
+[connection signal="timeout" from="Timer" to="." method="_animation_end"]
+[connection signal="timeout" from="Timer2" to="." method="_on_animation_2_end"]

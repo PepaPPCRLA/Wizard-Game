@@ -138,13 +138,6 @@ func load_data():
 		dev_mode = false
 		print(\"Nothing Saved\")
 
-func _on_debug_toggled() -> void:
-	if $CanvasLayer/Debugger.visible:
-		$CanvasLayer/Debugger.visible = false
-	else:
-		$CanvasLayer/Debugger.visible = true
-	save()
-
 func _on_tps_picker_item_selected(index: int) -> void:
 	Engine.physics_ticks_per_second = $\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_id(index)
 	save()
@@ -159,6 +152,18 @@ func _on_vsync_toggled(toggled_on: bool) -> void:
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 	else:
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+
+func _on_animation_2_end() -> void:
+	$CanvasLayer/Debugger.visible = false
+
+func _on_debugger_toggled(toggled_on: bool) -> void:
+	if toggled_on == false:
+		var tween = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.1 * Engine.time_scale)
+		$Timer2.start()
+	else:
+		$CanvasLayer/Debugger.visible = true
+		var tween = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",1,0.1 * Engine.time_scale)
+	save()
 "
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fs4d3"]
@@ -2605,9 +2610,15 @@ environment = SubResource("Environment_kq1c5")
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.1
 one_shot = true
+ignore_time_scale = true
+
+[node name="Timer2" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+ignore_time_scale = true
 
 [connection signal="pressed" from="CanvasLayer/Settings/Panel/Back/Close" to="." method="_on_close_pressed"]
-[connection signal="pressed" from="CanvasLayer/Settings/Panel/GridContainer/Debugger" to="." method="_on_debug_toggled"]
+[connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/Debugger" to="." method="_on_debugger_toggled"]
 [connection signal="item_selected" from="CanvasLayer/Settings/Panel/GridContainer/TPS Picker" to="." method="_on_tps_picker_item_selected"]
 [connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/Vsync" to="." method="_on_vsync_toggled"]
 [connection signal="value_changed" from="CanvasLayer/Settings/Panel/GridContainer/GameSpeed" to="." method="_on_game_speed_value_changed"]
@@ -2623,3 +2634,4 @@ one_shot = true
 [connection signal="body_shape_entered" from="World/Attack 2" to="World/Attack 2" method="_on_body_shape_entered"]
 [connection signal="body_shape_entered" from="World/Attack 3" to="World/Attack 3" method="_on_body_shape_entered"]
 [connection signal="timeout" from="Timer" to="." method="_animation_end"]
+[connection signal="timeout" from="Timer2" to="." method="_on_animation_2_end"]

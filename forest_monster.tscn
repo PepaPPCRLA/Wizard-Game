@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://devxyhnuigd0c"]
+[gd_scene load_steps=24 format=3 uid="uid://devxyhnuigd0c"]
 
 [ext_resource type="Texture2D" uid="uid://bmn0cm8b48wjj" path="res://textures/Forest Monster idle_0001.png" id="1_g6q7d"]
 [ext_resource type="Texture2D" uid="uid://bquwd8cgiosd" path="res://textures/Forest Monster idle_0002.png" id="2_uw6a2"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://ch30u5faqvyl8" path="res://textures/Forest Monster idle_0004.png" id="4_hru4h"]
 [ext_resource type="Script" uid="uid://dvk84opxjevpp" path="res://scripts/animated_sprite_2d.gd" id="5_hd58r"]
 [ext_resource type="Texture2D" uid="uid://df3vk2i7ic7da" path="res://textures/glow.png" id="5_uw6a2"]
+[ext_resource type="Script" uid="uid://4cdo2s3lian6" path="res://point_light_2d.gd" id="7_gava5"]
 [ext_resource type="Script" uid="uid://bwg3rj6pptpi5" path="res://scripts/health_bar.gd" id="7_hru4h"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ei405"]
@@ -499,6 +500,7 @@ position = Vector2(0, 5.55556)
 color = Color(0.27451, 0.984314, 0.745098, 1)
 energy = 0.9
 texture = ExtResource("5_uw6a2")
+script = ExtResource("7_gava5")
 
 [node name="Sprite2D" type="Sprite2D" parent="AnimatedSprite2D/PointLight2D"]
 modulate = Color(0.409833, 0.994182, 0.402968, 0.52549)

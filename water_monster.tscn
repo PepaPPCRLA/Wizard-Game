@@ -533,7 +533,6 @@ avoidance_mask = 3
 debug_path_custom_color = Color(1, 1, 0, 1)
 
 [node name="HealthBar" type="ColorRect" parent="."]
-visible = false
 light_mask = 0
 z_index = 100
 texture_filter = 1

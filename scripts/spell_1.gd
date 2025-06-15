@@ -4,7 +4,6 @@ var facing: int
 var initialSpeed: int
 var exploded: bool = false
 var last_position: Vector2
-@onready var Collision: RayCast2D = $"CollisionShape2D/Tickrate Fix"
 @onready var Sprite: AnimatedSprite2D = $"AnimatedSprite2D"
 @onready var Wizard: CharacterBody2D = $"../Wizard"
 # Called when the node enters the scene tree for the first time.
@@ -33,8 +32,6 @@ func _physics_process(delta: float) -> void:
 			$"Hit Detection Improver".target_position = last_position - global_position
 			last_position = $"Hit Detection Improver".global_position
 			$"Hit Detection Improver".enabled = true
-			if $"Hit Detection Improver".is_colliding():
-				print("uss")
 			if $"Hit Detection Improver".is_colliding() and $"Hit Detection Improver".get_collider() != $"../Wizard":
 				if $"Hit Detection Improver".get_collider() != $"../Foreground":
 					$"Hit Detection Improver".get_collider().damage(10)
@@ -44,8 +41,6 @@ func _physics_process(delta: float) -> void:
 				if $"Hit Prediction".get_collider() != $"../Foreground":
 					$"Hit Prediction".get_collider().damage(10)
 				explode()
-		
-	
 
 
 func move(delta):
@@ -54,12 +49,6 @@ func move(delta):
 		$"Hit Prediction".target_position.x = ((initialSpeed + 750) * delta * facing)
 
 
-
-func _on_body_shape_entered(_body_rid: RID, body: Node2D, _body_shape_index: int, _local_shape_index: int) -> void:
-		if not body == Wizard and not facing == -1000 and !exploded:
-			if not body == $"../Foreground":
-				body.damage(10)
-			explode()
 
 func explode():
 	if !exploded:

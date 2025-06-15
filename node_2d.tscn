@@ -1,4 +1,4 @@
-[gd_scene load_steps=156 format=4 uid="uid://4kuhak4ql42j"]
+[gd_scene load_steps=169 format=4 uid="uid://4kuhak4ql42j"]
 
 [ext_resource type="Texture2D" uid="uid://ca58cotvw4d4s" path="res://textures/Spell_1_ui.png" id="2_fs4d3"]
 [ext_resource type="Texture2D" uid="uid://dlyw7ftdhbgko" path="res://textures/Wood Tileset.png" id="2_ir8iy"]
@@ -36,6 +36,7 @@
 [ext_resource type="Script" uid="uid://df52e83y66nco" path="res://scripts/lights.gd" id="24_cnnru"]
 [ext_resource type="Texture2D" uid="uid://dceqfiyaf83uf" path="res://textures/Lava Monster Projectile_0005.png" id="28_4qosj"]
 [ext_resource type="PackedScene" uid="uid://yh8xbbcfwgny" path="res://lava_monster.tscn" id="30_2u7jv"]
+[ext_resource type="Script" uid="uid://1bw2quy4e4l7" path="res://animated_sprite_2d.gd" id="34_6ip5v"]
 
 [sub_resource type="GDScript" id="GDScript_ei405"]
 resource_name = "Debugger"
@@ -102,7 +103,6 @@ func load_data():
 			Engine.physics_ticks_per_second = file.get_var(Engine.physics_ticks_per_second)
 		else:
 			Engine.physics_ticks_per_second = 60
-		$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".select($\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_index(Engine.physics_ticks_per_second))
 		$CanvasLayer/Debugger.visible = file.get_var($CanvasLayer/Debugger.visible)
 		match $CanvasLayer/Debugger.visible:
 			true:
@@ -116,6 +116,7 @@ func load_data():
 			$CanvasLayer/Settings/Panel/GridContainer/GameSpeed.visible = true
 			$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".add_item(\"5 Ticks Per Second\", 5)
 			print(\"Developer Mode\")
+		$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".select($\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_index(Engine.physics_ticks_per_second))
 	else:
 		dev_mode = false
 		print(\"Nothing Saved\")
@@ -355,6 +356,26 @@ _data = {
 &"attack": SubResource("Animation_ornx7"),
 &"unlock": SubResource("Animation_mryly")
 }
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_540hr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6ip5v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q5dlx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c4wnb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7plk7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fbwgr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7mj2a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fshgd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lbrxf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xjt7e"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_0xo8l"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
@@ -1566,15 +1587,17 @@ script/source = "extends Area2D
 
 var facing: int
 var initialSpeed: int
-@onready var Sprite = $\"AnimatedSprite2D\"
-@onready var Wizard = $\"../Wizard\"
+var exploded: bool = false
+var last_position: Vector2
+@onready var Sprite: AnimatedSprite2D = $\"AnimatedSprite2D\"
+@onready var Wizard: CharacterBody2D = $\"../Wizard\"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if not facing:
 		facing = -1000
 		position.y = 1000
 	elif facing == -1:
-		Sprite.flip_h = true
+		Sprite.rotation_degrees = -45
 		$CollisionShape2D.position.x = -10
 		position = Wizard.position + Vector2(10,10)
 	else:
@@ -1583,25 +1606,46 @@ func _ready() -> void:
 	get_tree().create_tween().tween_property(Sprite, \"modulate:a\", 1, 0.25)
 	await get_tree().create_timer(5).timeout
 	if not facing == -1000:
-		queue_free()
+		explode()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if not facing == -1000:
-		move(delta)
+		move(float(1) / Engine.physics_ticks_per_second * Engine.time_scale)
 		visible = true
-	else:
-		visible = false
+		if !exploded:
+			$\"Hit Detection Improver\".target_position = last_position - global_position
+			last_position = $\"Hit Detection Improver\".global_position
+			$\"Hit Detection Improver\".enabled = true
+			if $\"Hit Detection Improver\".is_colliding() and $\"Hit Detection Improver\".get_collider() != $\"../Wizard\":
+				if $\"Hit Detection Improver\".get_collider() != $\"../Foreground\":
+					$\"Hit Detection Improver\".get_collider().damage(30)
+				explode()
+
+			if $\"Hit Prediction\".is_colliding() and $\"Hit Prediction\".get_collider() != $\"../Wizard\":
+				if $\"Hit Prediction\".get_collider() != $\"../Foreground\":
+					$\"Hit Prediction\".get_collider().damage(30)
+				explode()
+
 
 func move(delta):
-	position.x += (initialSpeed + 1000) * delta * facing
+	if !exploded:
+		position.x += (initialSpeed + 1000) * delta * facing
+		$\"Hit Prediction\".target_position.x = ((initialSpeed + 1000) * delta * facing)
 
 
-func _on_body_shape_entered(_body_rid: RID, body: Node2D, _body_shape_index: int, _local_shape_index: int) -> void:
-		if not body == Wizard and not facing == -1000:
-			if not body == $\"../Foreground\":
-				body.damage(30)
-			queue_free()
+
+func explode():
+	if !exploded:
+		exploded = true
+		$AnimatedSprite2D.queue_free()
+		$CollisionShape2D.queue_free()
+		$\"Hit Prediction\".queue_free()
+		$\"Hit Detection Improver\".queue_free()
+		$Explosion.position *= facing
+		$Explosion.emitting = true
+		await get_tree().create_timer(5).timeout
+		queue_free()
 "
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_540hr"]
@@ -1618,12 +1662,34 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_5bpkj"]
 radius = 8.35
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_540hr"]
+light_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6ip5v"]
+lifetime_randomness = 0.25
+particle_flag_disable_z = true
+angle_min = -720.0
+angle_max = 720.0
+spread = 180.0
+flatness = 1.0
+initial_velocity_min = 150.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 200, 0)
+attractor_interaction_enabled = false
+scale_min = 2.0
+scale_max = 4.0
+collision_mode = 1
+collision_friction = 0.5
+collision_bounce = 0.7
+collision_use_scale = true
+
 [sub_resource type="GDScript" id="GDScript_bjha6"]
 resource_name = "attack 1"
 script/source = "extends Area2D
 
 var facing: int
 var initialSpeed: Vector2
+var last_position: Vector2
 @onready var Sprite: AnimatedSprite2D = $\"AnimatedSprite2D\"
 @onready var Wizard: CharacterBody2D = $\"../Wizard\"
 # Called when the node enters the scene tree for the first time.
@@ -1638,16 +1704,23 @@ func _ready() -> void:
 	get_tree().create_tween().tween_property(Sprite, \"modulate:a\", 1, 0.25)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if not facing == -1000:
-		move(delta)
+		move(float(1) / Engine.physics_ticks_per_second * Engine.time_scale)
 		visible = true
+		$\"Hit Detection Improver\".target_position = last_position - global_position
+		last_position = $\"Hit Detection Improver\".global_position
+		$\"Hit Detection Improver\".enabled = true
+		if $\"Hit Detection Improver\".is_colliding() and !$\"Hit Detection Improver\".get_collider():
+			if $\"Hit Detection Improver\".get_collider() == Wizard:
+				$\"Hit Detection Improver\".get_collider().damage(10)
+			explode()
 	else:
 		visible = false
 		
 func move(delta):
-	position += initialSpeed * Vector2(delta,delta)
-	initialSpeed *= Vector2(0.995 , 0.995)
+	position += initialSpeed * Vector2(delta, delta)
+	initialSpeed *= Vector2(pow(0.99, delta * 60), pow(0.99, delta * 60 - 2))
 	if abs(initialSpeed.x) + abs(initialSpeed.y) <= 150:
 		$CollisionShape2D.disabled = true
 		Sprite.speed_scale = 0.5
@@ -1674,6 +1747,9 @@ func _on_body_shape_entered(_body_rid: RID, body: Node2D, _body_shape_index: int
 				get_tree().create_tween().tween_property(Sprite, \"modulate:a\", 0, 0.25)
 				z_index = -1
 			queue_free()
+
+func explode():
+	queue_free()
 "
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_q5dlx"]
@@ -2078,6 +2154,7 @@ custom_minimum_size = Vector2(314, 100)
 layout_mode = 2
 focus_mode = 0
 text = "Debugger"
+flat = true
 
 [node name="TPS Picker" type="OptionButton" parent="CanvasLayer/Settings/Panel/GridContainer"]
 custom_minimum_size = Vector2(314, 100)
@@ -2113,6 +2190,16 @@ text = "Vsync"
 visible = false
 custom_minimum_size = Vector2(314, 100)
 layout_mode = 2
+theme_override_styles/up_down_buttons_separator = SubResource("StyleBoxEmpty_540hr")
+theme_override_styles/field_and_buttons_separator = SubResource("StyleBoxEmpty_6ip5v")
+theme_override_styles/down_background_disabled = SubResource("StyleBoxEmpty_q5dlx")
+theme_override_styles/down_background_pressed = SubResource("StyleBoxEmpty_c4wnb")
+theme_override_styles/down_background_hovered = SubResource("StyleBoxEmpty_7plk7")
+theme_override_styles/down_background = SubResource("StyleBoxEmpty_fbwgr")
+theme_override_styles/up_background_disabled = SubResource("StyleBoxEmpty_7mj2a")
+theme_override_styles/up_background_pressed = SubResource("StyleBoxEmpty_fshgd")
+theme_override_styles/up_background_hovered = SubResource("StyleBoxEmpty_lbrxf")
+theme_override_styles/up_background = SubResource("StyleBoxEmpty_xjt7e")
 step = 0.1
 value = 1.0
 allow_greater = true
@@ -2367,6 +2454,32 @@ sprite_frames = SubResource("SpriteFrames_540hr")
 position = Vector2(10, 0)
 shape = SubResource("CircleShape2D_5bpkj")
 
+[node name="Hit Prediction" type="RayCast2D" parent="World/Spell 2"]
+position = Vector2(10, 0)
+target_position = Vector2(0, 0)
+collision_mask = 3
+hit_from_inside = true
+
+[node name="Hit Detection Improver" type="RayCast2D" parent="World/Spell 2"]
+position = Vector2(10, 0)
+enabled = false
+target_position = Vector2(0, 0)
+collision_mask = 3
+hit_from_inside = true
+
+[node name="Explosion" type="GPUParticles2D" parent="World/Spell 2"]
+modulate = Color(0.478431, 0.941176, 0.945098, 1)
+material = SubResource("CanvasItemMaterial_540hr")
+emitting = false
+amount = 100
+lifetime = 5.0
+one_shot = true
+speed_scale = 2.0
+explosiveness = 0.95
+trail_enabled = true
+trail_lifetime = 0.5
+process_material = SubResource("ParticleProcessMaterial_6ip5v")
+
 [node name="Attack 1" type="Area2D" parent="World"]
 collision_layer = 0
 script = SubResource("GDScript_bjha6")
@@ -2378,10 +2491,17 @@ scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_4ccxe")
 animation = &"Leaf Attack"
 frame_progress = 0.652978
+script = ExtResource("34_6ip5v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Attack 1"]
 position = Vector2(10, 0)
 shape = SubResource("CircleShape2D_5bpkj")
+
+[node name="Hit Detection Improver" type="RayCast2D" parent="World/Attack 1"]
+position = Vector2(10, 0)
+enabled = false
+target_position = Vector2(0, 0)
+hit_from_inside = true
 
 [node name="Attack 2" type="Area2D" parent="World"]
 collision_layer = 0

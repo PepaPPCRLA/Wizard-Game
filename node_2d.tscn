@@ -80,11 +80,11 @@ func toggle_pause():
 
 func pause():
 	$CanvasLayer/Settings.visible = true
-	var tween = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",1,0.1)
+	var tween = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",1,0.1 * Engine.time_scale)
 	get_tree().paused = true
 	
 func resume():
-	var tween = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",0,0.1)
+	var tween = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",0,0.1 * Engine.time_scale)
 	get_tree().paused = false
 	$Timer.start()
 

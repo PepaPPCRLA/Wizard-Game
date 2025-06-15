@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cedb6hr1nry5q" path="res://textures/Background Wood Tileset.png" id="4_x0ka3"]
 [ext_resource type="Texture2D" uid="uid://c68kv2cg0cn64" path="res://textures/wizard_idle_0001.png" id="5_0h7mo"]
 [ext_resource type="Texture2D" uid="uid://cq286livn815" path="res://textures/sand.png" id="5_bjha6"]
-[ext_resource type="Texture2D" uid="uid://0e41aj8wmvoq" path="res://PLACEHOLDER.png" id="5_x0ka3"]
+[ext_resource type="Texture2D" uid="uid://0e41aj8wmvoq" path="res://textures/PLACEHOLDER.png" id="5_x0ka3"]
 [ext_resource type="Texture2D" uid="uid://diw07wqhc77ll" path="res://textures/wizard_idle_0002.png" id="6_nr8wp"]
 [ext_resource type="Texture2D" uid="uid://cstdalf7usn72" path="res://textures/wizard_jump_0003.png" id="7_d2bti"]
 [ext_resource type="Texture2D" uid="uid://djh8fjvt5tymj" path="res://textures/Forest Relic.png" id="7_ei405"]

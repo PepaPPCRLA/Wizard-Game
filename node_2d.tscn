@@ -66,7 +66,7 @@ func _process(_float) -> void:
 		\"PTPS: %d\\n\" % Engine.physics_ticks_per_second + \\
 		\"Horizontal Velocity: %.2f\\n\" % $World/Wizard.velocity.x + \\
 		\"Vertical Velocity: %.2f\\n\" % $World/Wizard.velocity.y + \\
-		\"Sliding: \" + str(round($World/Wizard.sliding * 100) / 100) + \"\\nOutput: \" + str(debug)
+		\"Sliding: \" + str(round($World/Wizard.sliding * 100) / 100)
 	
 	if Input.is_action_just_pressed(\"Pause\"):
 		toggle_pause()
@@ -80,11 +80,14 @@ func toggle_pause():
 
 func pause():
 	$CanvasLayer/Settings.visible = true
-	var tween = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",1,0.1 * Engine.time_scale)
+	$CanvasLayer/Settings.position.y = -10
+	var tween1 = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",1,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	var tween2 = self.create_tween().tween_property($CanvasLayer/Settings,\"position:y\",40,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	get_tree().paused = true
 	
 func resume():
-	var tween = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",0,0.1 * Engine.time_scale)
+	var tween1 = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	var tween2 = self.create_tween().tween_property($CanvasLayer/Settings,\"position:y\",90,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	get_tree().paused = false
 	$Timer.start()
 
@@ -93,19 +96,6 @@ func _animation_end() -> void:
 
 func _on_close_pressed() -> void:
 	resume()
-
-func print(output,important: bool = false):
-	if important == true:
-		debug = str(output) + \"\\n\" + debug
-	elif debug == \"\":
-		debug = debug + str(output)
-	else:
-		debug = debug + \"\\n\" + str(output)
-	
-	debug = debug.strip_edges(true, true)
-
-func clear():
-	debug = \"\"
 
 func save():
 	var file = FileAccess.open(save_path, FileAccess.WRITE)
@@ -158,11 +148,14 @@ func _on_animation_2_end() -> void:
 
 func _on_debugger_toggled(toggled_on: bool) -> void:
 	if toggled_on == false:
-		var tween = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.1 * Engine.time_scale)
+		var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",50,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 		$Timer2.start()
 	else:
+		$CanvasLayer/Debugger.position.y = 50
 		$CanvasLayer/Debugger.visible = true
-		var tween = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",1,0.1 * Engine.time_scale)
+		var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",1,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	save()
 "
 
@@ -1953,14 +1946,13 @@ script = SubResource("GDScript_ei405")
 process_mode = 3
 
 [node name="Debugger" type="PanelContainer" parent="CanvasLayer"]
-visible = false
 anchors_preset = -1
 anchor_top = -0.003
 anchor_right = 0.244
 anchor_bottom = 0.037
-offset_top = -0.056
-offset_right = -0.0880127
-offset_bottom = 0.704002
+offset_top = 3.24
+offset_right = -18.48
+offset_bottom = 5.04
 
 [node name="Debugger_Text" type="Label" parent="CanvasLayer/Debugger"]
 layout_mode = 2

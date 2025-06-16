@@ -40,15 +40,15 @@
 [sub_resource type="GDScript" id="GDScript_ei405"]
 resource_name = "Debugger"
 script/source = "extends Control
-var debug: String = \"\"
 @export var global: Node = self
-const save_path = \"user://Wizard_Game_Save\"
 var dev_mode: bool = false
 var config = ConfigFile.new()
 var err = config.load(\"user://config.cfg\")
 
 func _ready() -> void:
-	load_data()
+	load_data(\"all\")
+	$CanvasLayer/Settings/Panel/GridContainer/VSync.connect(\"toggled\",_on_vsync_toggled)
+	$CanvasLayer/Settings/Panel/GridContainer/Debugger.connect(\"toggled\",_on_debugger_toggled)
 
 func _process(_float) -> void:
 	if Input.is_action_just_pressed(\"Freeze\") and dev_mode == true:
@@ -103,37 +103,38 @@ func save():
 	config.set_value(\"config\",\"dev_mode\",dev_mode)
 	config.set_value(\"config\",\"ticks_per_second\",Engine.physics_ticks_per_second)
 	config.set_value(\"config\",\"debugger_enabled\",$CanvasLayer/Settings/Panel/GridContainer/Debugger.button_pressed)
-	config.set_value(\"config\",\"vsync_enabled\",$CanvasLayer/Settings/Panel/GridContainer/Vsync.button_pressed)
+	config.set_value(\"config\",\"vsync_enabled\",$CanvasLayer/Settings/Panel/GridContainer/VSync.button_pressed)
 	config.save(\"user://config.cfg\")
 
 func load_data(options: String = \"all\"):
-	match options:
-		\"vsync\",\"all\":
-			$CanvasLayer/Settings/Panel/GridContainer/Vsync.button_pressed = config.get_value(\"config\", \"vsync_enabled\",true)
-			if config.get_value(\"config\", \"vsync_enabled\",true) == true:
-				DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
-			else:
-				DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-		\"ticks_per_second\",\"all\":
-			Engine.physics_ticks_per_second = config.get_value(\"config\", \"ticks_per_second\",60)
-			$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".select($\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_index(Engine.physics_ticks_per_second))
-
-		\"debugger\",\"all\":
-			$CanvasLayer/Settings/Panel/GridContainer/Debugger.button_pressed = config.get_value(\"config\", \"debugger_enabled\",false)
-			if config.get_value(\"config\", \"debugger_enabled\",false) == false:
-				var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-				var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",50,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-				$Timer2.start()
-			else:
-				$CanvasLayer/Debugger.position.y = 50
-				$CanvasLayer/Debugger.visible = true
-				var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",1,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-				var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-		\"dev_mode\",\"all\":
-			if config.get_value(\"config\", \"dev_mode\",false):
-				$CanvasLayer/Settings/Panel/GridContainer/GameSpeed.visible = true
-				$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".add_item(\"5 Ticks Per Second\", 5)
-				print(\"Developer Mode\")
+	if options == \"all\" or options == \"vsync\":
+		$CanvasLayer/Settings/Panel/GridContainer/VSync.button_pressed = config.get_value(\"config\", \"vsync_enabled\",true)
+		if config.get_value(\"config\", \"vsync_enabled\",true) == true:
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+		else:
+			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+	
+	if options == \"all\" or options == \"ticks_per_second\":
+		Engine.physics_ticks_per_second = config.get_value(\"config\", \"ticks_per_second\",60)
+		$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".select($\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_index(Engine.physics_ticks_per_second))
+	
+	if options == \"all\" or options == \"debugger\":
+		$CanvasLayer/Settings/Panel/GridContainer/Debugger.button_pressed = config.get_value(\"config\", \"debugger_enabled\",false)
+		if config.get_value(\"config\", \"debugger_enabled\",false) == false:
+			var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+			var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",50,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+			$Timer2.start()
+		else:
+			$CanvasLayer/Debugger.position.y = 50
+			$CanvasLayer/Debugger.visible = true
+			var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",1,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+			var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	
+	if options == \"all\" or options == \"dev_mode\":
+		if config.get_value(\"config\", \"dev_mode\",false):
+			$CanvasLayer/Settings/Panel/GridContainer/GameSpeed.visible = true
+			$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".add_item(\"5 Ticks Per Second\", 5)
+			print(\"Developer Mode\")
 
 func _on_tps_picker_item_selected(index: int) -> void:
 	Engine.physics_ticks_per_second = $\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_id(index)
@@ -142,12 +143,10 @@ func _on_tps_picker_item_selected(index: int) -> void:
 
 func _on_game_speed_value_changed(value: float) -> void:
 	Engine.time_scale = $CanvasLayer/Settings/Panel/GridContainer/GameSpeed.value
-	save()
-
 
 func _on_vsync_toggled(toggled_on: bool) -> void:
 	save()
-	load_data()
+	load_data(\"vsync\")
 
 func _on_animation_2_end() -> void:
 	$CanvasLayer/Debugger.visible = false
@@ -2189,7 +2188,7 @@ popup/item_4/id = 30
 popup/item_5/text = "15 Physics Ticks Per Second"
 popup/item_5/id = 15
 
-[node name="Vsync" type="CheckButton" parent="CanvasLayer/Settings/Panel/GridContainer"]
+[node name="VSync" type="CheckButton" parent="CanvasLayer/Settings/Panel/GridContainer"]
 custom_minimum_size = Vector2(314, 100)
 layout_mode = 2
 focus_mode = 0
@@ -2733,9 +2732,7 @@ one_shot = true
 ignore_time_scale = true
 
 [connection signal="pressed" from="CanvasLayer/Settings/Panel/Back/Close" to="." method="_on_close_pressed"]
-[connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/Debugger" to="." method="_on_debugger_toggled"]
 [connection signal="item_selected" from="CanvasLayer/Settings/Panel/GridContainer/TPS Picker" to="." method="_on_tps_picker_item_selected"]
-[connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/Vsync" to="." method="_on_vsync_toggled"]
 [connection signal="value_changed" from="CanvasLayer/Settings/Panel/GridContainer/GameSpeed" to="." method="_on_game_speed_value_changed"]
 [connection signal="body_entered" from="World/Foreground/Forest Relic" to="World/Wizard" method="_on_forest_relic_body_entered"]
 [connection signal="body_entered" from="World/Foreground/Water Relic" to="World/Wizard" method="_on_water_relic_body_entered"]

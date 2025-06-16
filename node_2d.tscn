@@ -106,31 +106,34 @@ func save():
 	config.set_value(\"config\",\"vsync_enabled\",$CanvasLayer/Settings/Panel/GridContainer/Vsync.button_pressed)
 	config.save(\"user://config.cfg\")
 
-func load_data():
-	$CanvasLayer/Settings/Panel/GridContainer/Vsync.button_pressed = config.get_value(\"config\", \"vsync_enabled\",true)
-	if config.get_value(\"config\", \"vsync_enabled\",true) == true:
-		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
-	else:
-		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-	
-	Engine.physics_ticks_per_second = config.get_value(\"config\", \"ticks_per_second\",60)
-	$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".select($\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_index(Engine.physics_ticks_per_second))
+func load_data(options: String = \"all\"):
+	match options:
+		\"vsync\",\"all\":
+			$CanvasLayer/Settings/Panel/GridContainer/Vsync.button_pressed = config.get_value(\"config\", \"vsync_enabled\",true)
+			if config.get_value(\"config\", \"vsync_enabled\",true) == true:
+				DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+			else:
+				DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+		\"ticks_per_second\",\"all\":
+			Engine.physics_ticks_per_second = config.get_value(\"config\", \"ticks_per_second\",60)
+			$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".select($\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_index(Engine.physics_ticks_per_second))
 
-	$CanvasLayer/Settings/Panel/GridContainer/Debugger.button_pressed = config.get_value(\"config\", \"debugger_enabled\",false)
-	if config.get_value(\"config\", \"debugger_enabled\",false) == false:
-		var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-		var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",50,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-		$Timer2.start()
-	else:
-		$CanvasLayer/Debugger.position.y = 50
-		$CanvasLayer/Debugger.visible = true
-		var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",1,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-		var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	
-	if config.get_value(\"config\", \"dev_mode\",false):
-		$CanvasLayer/Settings/Panel/GridContainer/GameSpeed.visible = true
-		$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".add_item(\"5 Ticks Per Second\", 5)
-		print(\"Developer Mode\")
+		\"debugger\",\"all\":
+			$CanvasLayer/Settings/Panel/GridContainer/Debugger.button_pressed = config.get_value(\"config\", \"debugger_enabled\",false)
+			if config.get_value(\"config\", \"debugger_enabled\",false) == false:
+				var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+				var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",50,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+				$Timer2.start()
+			else:
+				$CanvasLayer/Debugger.position.y = 50
+				$CanvasLayer/Debugger.visible = true
+				var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",1,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+				var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		\"dev_mode\",\"all\":
+			if config.get_value(\"config\", \"dev_mode\",false):
+				$CanvasLayer/Settings/Panel/GridContainer/GameSpeed.visible = true
+				$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".add_item(\"5 Ticks Per Second\", 5)
+				print(\"Developer Mode\")
 
 func _on_tps_picker_item_selected(index: int) -> void:
 	Engine.physics_ticks_per_second = $\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_id(index)
@@ -151,7 +154,7 @@ func _on_animation_2_end() -> void:
 
 func _on_debugger_toggled(toggled_on: bool) -> void:
 	save()
-	load_data()
+	load_data(\"debugger\")
 "
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fs4d3"]

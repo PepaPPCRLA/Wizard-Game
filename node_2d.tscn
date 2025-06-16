@@ -21,7 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://b0113cl7uiyah" path="res://textures/lava_glow.png" id="12_2hxjc"]
 [ext_resource type="PackedScene" uid="uid://devxyhnuigd0c" path="res://forest_monster.tscn" id="12_e8dv2"]
 [ext_resource type="Shader" uid="uid://ccn5hyi48c2j4" path="res://shaders/node_2d.gdshader" id="13_kq1c5"]
-[ext_resource type="FontFile" uid="uid://doxkm432l8txb" path="res://Pixellettersfull-BnJ5.ttf" id="15_7vxoj"]
+[ext_resource type="FontFile" uid="uid://doxkm432l8txb" path="res://fonts/Pixellettersfull-BnJ5.ttf" id="15_7vxoj"]
 [ext_resource type="Texture2D" uid="uid://c6sikavlpiiak" path="res://textures/Forest Monster Projectile_0001.png" id="16_fs4d3"]
 [ext_resource type="Texture2D" uid="uid://xkeqiuhx5x6g" path="res://textures/Forest Monster Projectile_0002.png" id="17_7vxoj"]
 [ext_resource type="Script" uid="uid://cju15lyxbxkns" path="res://scripts/particles.gd" id="17_540hr"]
@@ -116,7 +116,6 @@ func load_data():
 	Engine.physics_ticks_per_second = config.get_value(\"config\", \"ticks_per_second\",60)
 	$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".select($\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_index(Engine.physics_ticks_per_second))
 
-	#$CanvasLayer/Debugger.visible = config.get_value(\"config\", \"debugger_enabled\",false)
 	$CanvasLayer/Settings/Panel/GridContainer/Debugger.button_pressed = config.get_value(\"config\", \"debugger_enabled\",false)
 	if config.get_value(\"config\", \"debugger_enabled\",false) == false:
 		var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)

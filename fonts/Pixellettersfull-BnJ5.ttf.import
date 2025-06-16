@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://doxkm432l8txb"
-path="res://.godot/imported/Pixellettersfull-BnJ5.ttf-196818f3db3558960b053a8324ba28d3.fontdata"
+path="res://.godot/imported/Pixellettersfull-BnJ5.ttf-75a65f681aa00284dee462e7d6b68b85.fontdata"
 
 [deps]
 
-source_file="res://Pixellettersfull-BnJ5.ttf"
-dest_files=["res://.godot/imported/Pixellettersfull-BnJ5.ttf-196818f3db3558960b053a8324ba28d3.fontdata"]
+source_file="res://fonts/Pixellettersfull-BnJ5.ttf"
+dest_files=["res://.godot/imported/Pixellettersfull-BnJ5.ttf-75a65f681aa00284dee462e7d6b68b85.fontdata"]
 
 [params]
 

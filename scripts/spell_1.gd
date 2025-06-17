@@ -34,12 +34,12 @@ func _physics_process(_delta: float) -> void:
 			$"Hit Detection Improver".enabled = true
 			if $"Hit Detection Improver".is_colliding() and $"Hit Detection Improver".get_collider() != $"../Wizard":
 				if $"Hit Detection Improver".get_collider() != $"../Foreground":
-					$"Hit Detection Improver".get_collider().damage(10)
+					explode($"Hit Prediction".get_collider())
 				explode()
 
 			if $"Hit Prediction".is_colliding() and $"Hit Prediction".get_collider() != $"../Wizard":
 				if $"Hit Prediction".get_collider() != $"../Foreground":
-					$"Hit Prediction".get_collider().damage(10)
+					explode($"Hit Prediction".get_collider())
 				explode()
 
 
@@ -50,9 +50,11 @@ func move(delta):
 
 
 
-func explode():
+func explode(body = null):
 	if !exploded:
 		exploded = true
+		if body:
+			body.damage(10)
 		$AnimatedSprite2D.queue_free()
 		$CollisionShape2D.queue_free()
 		$"Hit Prediction".queue_free()

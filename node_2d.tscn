@@ -102,12 +102,17 @@ func _animation_end() -> void:
 func _on_close_pressed() -> void:
 	resume()
 
-func save():
-	config.set_value(\"config\",\"dev_mode\",dev_mode)
-	config.set_value(\"config\",\"ticks_per_second\",Engine.physics_ticks_per_second)
-	config.set_value(\"config\",\"debugger\",debugger.button_pressed)
-	config.set_value(\"config\",\"vsync\",vsync.button_pressed)
-	config.set_value(\"config\",\"graphics\",$\"CanvasLayer/Settings/Panel/GridContainer/Graphics Selector\".get_selected_id())
+func save(options: String = \"all\"):
+	if options == \"all\" or options == \"dev_mode\":
+		config.set_value(\"config\",\"dev_mode\",dev_mode)
+	if options == \"all\" or options == \"ticks_per_second\":
+		config.set_value(\"config\",\"ticks_per_second\",Engine.physics_ticks_per_second)
+	if options == \"all\" or options == \"debugger\":
+		config.set_value(\"config\",\"debugger\",debugger.button_pressed)
+	if options == \"all\" or options == \"vsync\":
+		config.set_value(\"config\",\"vsync\",vsync.button_pressed)
+	if options == \"all\" or options == \"graphics\":
+		config.set_value(\"config\",\"graphics\",$\"CanvasLayer/Settings/Panel/GridContainer/Graphics Selector\".get_selected_id())
 	config.save(\"user://config.cfg\")
 
 func load_data(options: String = \"all\"):
@@ -164,7 +169,7 @@ func load_data(options: String = \"all\"):
 
 func _on_tps_picker_item_selected(index: int) -> void:
 	Engine.physics_ticks_per_second = $\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_id(index)
-	save()
+	save(\"ticks_per_second\")
 
 
 func _on_game_speed_value_changed(value: float) -> void:
@@ -175,18 +180,18 @@ func _on_animation_2_end() -> void:
 
 
 
-func _on_graphics_selector_item_selected(index: int) -> void:
-	save()
+func _on_graphics_selector_item_selected() -> void:
+	save(\"graphics\")
 	load_data(\"graphics\")
 
 
-func _on_debugger_toggled(toggled_on: bool) -> void:
-	save()
+func _on_debugger_toggled() -> void:
+	save(\"debugger\")
 	load_data(\"debugger\")
 
 
-func _on_vsync_toggled(toggled_on: bool) -> void:
-	save()
+func _on_vsync_toggled() -> void:
+	save(\"vsync\")
 	load_data(\"vsync\")
 "
 

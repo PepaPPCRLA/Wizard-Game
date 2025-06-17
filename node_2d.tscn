@@ -42,7 +42,7 @@
 resource_name = "Debugger"
 script/source = "extends Control
 @export var global: Node = self
-var dev_mode: bool = false
+var dev_mode: bool = OS.is_debug_build()
 var config = ConfigFile.new()
 @export var debugger: CheckButton
 @export var vsync: CheckButton
@@ -103,8 +103,6 @@ func _on_close_pressed() -> void:
 	resume()
 
 func save(options: String = \"all\"):
-	if options == \"all\" or options == \"dev_mode\":
-		config.set_value(\"config\",\"dev_mode\",dev_mode)
 	if options == \"all\" or options == \"ticks_per_second\":
 		config.set_value(\"config\",\"ticks_per_second\",Engine.physics_ticks_per_second)
 	if options == \"all\" or options == \"debugger\":
@@ -162,7 +160,7 @@ func load_data(options: String = \"all\"):
 			$World/Sun.enabled = false
 
 	if options == \"all\" or options == \"dev_mode\":
-		if config.get_value(\"config\", \"dev_mode\",false):
+		if dev_mode:
 			$CanvasLayer/Settings/Panel/GridContainer/GameSpeed.visible = true
 			$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".add_item(\"5 Ticks Per Second\", 5)
 			print(\"Developer Mode\")
@@ -180,17 +178,18 @@ func _on_animation_2_end() -> void:
 
 
 
-func _on_graphics_selector_item_selected() -> void:
+func _on_graphics_selector_item_selected(_s) -> void:
+	graphics = $\"CanvasLayer/Settings/Panel/GridContainer/Graphics Selector\".get_selected_id()
 	save(\"graphics\")
 	load_data(\"graphics\")
 
 
-func _on_debugger_toggled() -> void:
+func _on_debugger_toggled(_s) -> void:
 	save(\"debugger\")
 	load_data(\"debugger\")
 
 
-func _on_vsync_toggled() -> void:
+func _on_vsync_toggled(_s) -> void:
 	save(\"vsync\")
 	load_data(\"vsync\")
 "
@@ -1000,7 +999,7 @@ func _physics_process(_delta: float) -> void:
 			newspell(\"water\")
 			$\"../../CanvasLayer/Water Spell/AnimationPlayer\".play(\"attack\")
 		if is_on_floor():
-			coyote_time = 0.1
+			coyote_time = 0.25
 		if not is_on_floor():
 			velocity += get_gravity() * physics_delta
 		
@@ -2103,6 +2102,7 @@ libraries = {
 }
 
 [node name="Settings" type="PanelContainer" parent="CanvasLayer"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

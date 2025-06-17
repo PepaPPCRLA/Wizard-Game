@@ -41,7 +41,7 @@ var enemy: String = \"Water Monster\"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$Timer.connect(\"timeout\",Attack2)
-	#$AnimatedSprite2D.play(\"idle\")
+	$AnimatedSprite2D.play(\"idle\")
 	startpos = global_position
 	var e = VisibleOnScreenNotifier2D.new()
 	e.name = \"e\"

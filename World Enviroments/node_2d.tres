@@ -1,0 +1,43 @@
+[gd_resource type="Environment" load_steps=3 format=3 uid="uid://y2fwm37larjk"]
+
+[sub_resource type="Curve" id="Curve_kq1c5"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 1.4, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ornx7"]
+curve = SubResource("Curve_kq1c5")
+
+[resource]
+background_mode = 3
+tonemap_white = 0.51
+ssr_fade_in = 1.33149
+ssao_radius = 16.0
+ssao_intensity = 16.0
+ssao_power = 179.142
+ssao_detail = 5.0
+ssao_horizon = 1.0
+ssao_light_affect = 1.0
+ssao_ao_channel_affect = 1.0
+ssil_radius = 24.75
+ssil_intensity = 150.85
+ssil_normal_rejection = 0.0
+sdfgi_use_occlusion = true
+sdfgi_bounce_feedback = 1.99
+sdfgi_cascades = 8
+sdfgi_min_cell_size = 14.2
+sdfgi_cascade0_distance = 908.801
+sdfgi_max_distance = 232653.0
+glow_enabled = true
+glow_bloom = 0.1
+glow_blend_mode = 1
+glow_hdr_threshold = 1.51
+fog_mode = 1
+fog_light_energy = 16.0
+fog_sun_scatter = 10.15
+fog_density = 1.0
+fog_depth_curve = 4.0
+volumetric_fog_density = 1.0
+volumetric_fog_emission_energy = 3.4
+volumetric_fog_gi_inject = 2.16
+adjustment_enabled = true
+adjustment_color_correction = SubResource("CurveTexture_ornx7")

@@ -24,7 +24,7 @@ func _ready() -> void:
 		explode()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if not facing == -1000:
 		move(float(1) / Engine.physics_ticks_per_second * Engine.time_scale)
 		visible = true

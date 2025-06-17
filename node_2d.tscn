@@ -1,4 +1,4 @@
-[gd_scene load_steps=169 format=4 uid="uid://4kuhak4ql42j"]
+[gd_scene load_steps=166 format=4 uid="uid://4kuhak4ql42j"]
 
 [ext_resource type="Texture2D" uid="uid://ca58cotvw4d4s" path="res://textures/Spell_1_ui.png" id="2_fs4d3"]
 [ext_resource type="Texture2D" uid="uid://dlyw7ftdhbgko" path="res://textures/Wood Tileset.png" id="2_ir8iy"]
@@ -36,6 +36,7 @@
 [ext_resource type="Script" uid="uid://df52e83y66nco" path="res://scripts/lights.gd" id="24_cnnru"]
 [ext_resource type="Texture2D" uid="uid://dceqfiyaf83uf" path="res://textures/Lava Monster Projectile_0005.png" id="28_4qosj"]
 [ext_resource type="PackedScene" uid="uid://yh8xbbcfwgny" path="res://lava_monster.tscn" id="30_2u7jv"]
+[ext_resource type="Environment" uid="uid://y2fwm37larjk" path="res://World Enviroments/node_2d.tres" id="37_6ip5v"]
 
 [sub_resource type="GDScript" id="GDScript_ei405"]
 resource_name = "Debugger"
@@ -45,6 +46,7 @@ var dev_mode: bool = false
 var config = ConfigFile.new()
 @export var debugger: CheckButton
 @export var vsync: CheckButton
+var graphics: int
 var err = config.load(\"user://config.cfg\")
 
 func _ready() -> void:
@@ -84,13 +86,13 @@ func toggle_pause():
 func pause():
 	$CanvasLayer/Settings.visible = true
 	$CanvasLayer/Settings.position.y = -10
-	var tween1 = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",1,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	var tween2 = self.create_tween().tween_property($CanvasLayer/Settings,\"position:y\",40,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	var _tween1 = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",1,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	var _tween2 = self.create_tween().tween_property($CanvasLayer/Settings,\"position:y\",40,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	get_tree().paused = true
 	
 func resume():
-	var tween1 = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	var tween2 = self.create_tween().tween_property($CanvasLayer/Settings,\"position:y\",90,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	var _tween1 = self.create_tween().tween_property($CanvasLayer/Settings,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	var _tween2 = self.create_tween().tween_property($CanvasLayer/Settings,\"position:y\",90,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	get_tree().paused = false
 	$Timer.start()
 
@@ -105,6 +107,7 @@ func save():
 	config.set_value(\"config\",\"ticks_per_second\",Engine.physics_ticks_per_second)
 	config.set_value(\"config\",\"debugger\",debugger.button_pressed)
 	config.set_value(\"config\",\"vsync\",vsync.button_pressed)
+	config.set_value(\"config\",\"graphics\",$\"CanvasLayer/Settings/Panel/GridContainer/Graphics Selector\".get_selected_id())
 	config.save(\"user://config.cfg\")
 
 func load_data(options: String = \"all\"):
@@ -122,15 +125,37 @@ func load_data(options: String = \"all\"):
 	if options == \"all\" or options == \"debugger\":
 		debugger.button_pressed = config.get_value(\"config\", \"debugger\",false)
 		if config.get_value(\"config\", \"debugger\",false) == false:
-			var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-			var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",50,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+			var _tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+			var _tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",50,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 			$Timer2.start()
 		else:
 			$CanvasLayer/Debugger.position.y = 50
 			$CanvasLayer/Debugger.visible = true
-			var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",1,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-			var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+			var _tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",1,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+			var _tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	
+	if options == \"all\" or options == \"graphics\":
+		$\"CanvasLayer/Settings/Panel/GridContainer/Graphics Selector\".select(config.get_value(\"config\",\"graphics\",0))
+		graphics = config.get_value(\"config\",\"graphics\",0)
+		match graphics:
+			0:
+				$World/Sun.enabled = true
+				$World/WorldEnvironment.environment = load(\"res://World Enviroments/node_2d.tres\")
+				$World/Sky.modulate = Color8(217, 217, 217)
+				$World/Sky.color = Color8(155, 255, 255)
+			1:
+				$World/Sun.enabled = true
+				$World/WorldEnvironment.environment = null
+				$World/Sky.modulate = Color8(217, 217, 217)
+				$World/Sky.color = Color8(155, 255, 255)
+			2:
+				$World/Sun.enabled = false
+				$World/WorldEnvironment.environment = null
+				$World/Sky.modulate = Color8(255, 255, 255)
+				$World/Sky.color = Color8(200, 255, 255)
+		if $World/Wizard.world == 3:
+			$World/Sun.enabled = false
+
 	if options == \"all\" or options == \"dev_mode\":
 		if config.get_value(\"config\", \"dev_mode\",false):
 			$CanvasLayer/Settings/Panel/GridContainer/GameSpeed.visible = true
@@ -148,13 +173,18 @@ func _on_game_speed_value_changed(value: float) -> void:
 func _on_animation_2_end() -> void:
 	$CanvasLayer/Debugger.visible = false
 
-func _on_debugger_toggled(toggled_on: bool) -> void:
+func _on_debugger_toggled() -> void:
 	save()
 	load_data(\"debugger\")
 
-func _on_vsync_toggled(toggled_on: bool) -> void:
+func _on_vsync_toggled() -> void:
 	save()
 	load_data(\"vsync\")
+
+
+func _on_graphics_selector_item_selected(index: int) -> void:
+	save()
+	load_data(\"graphics\")
 "
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fs4d3"]
@@ -917,8 +947,8 @@ sources/1 = SubResource("TileSetAtlasSource_nr8wp")
 [sub_resource type="GDScript" id="GDScript_e8dv2"]
 resource_name = "Wizard"
 script/source = "extends CharacterBody2D
-const SPEED: int = 1800.0
-const JUMP_VELOCITY: int = -400.0
+const SPEED: int = 1800
+const JUMP_VELOCITY: int = -400
 var facing: int = 1
 var coyote_time: float = 0
 var sliding: float = -1
@@ -934,7 +964,7 @@ var target_tps: int = 60
 
 func _ready() -> void:
 	$AnimationPlayer.play(\"spawn\")
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var physics_delta = float(1) / Engine.physics_ticks_per_second * Engine.time_scale
 	coyote_time -= physics_delta
 	sliding -= physics_delta
@@ -1029,7 +1059,7 @@ func _physics_process(delta: float) -> void:
 				if abs(velocity.x) < 600:
 					velocity.x = 600 * direction
 				$AnimatedSprite2D.play(\"slide\")
-				facing = direction
+				facing = int(direction)
 				if direction == 1:
 					$AnimatedSprite2D.flip_h = false
 				else:
@@ -1229,7 +1259,7 @@ func _on_world_3_portal_body_entered(body: Node2D) -> void:
 			$\"../Water Monster9\".queue_free()
 
 
-func _on_lava_body_shape_entered(body_rid: RID, body: Node2D, body_shape_index: int, local_shape_index: int) -> void:
+func _on_lava_body_shape_entered(_body_rid: RID, _body: Node2D, _body_shape_index: int, _local_shape_index: int) -> void:
 	kill()
 "
 
@@ -1614,7 +1644,7 @@ func _ready() -> void:
 		explode()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if not facing == -1000:
 		move(float(1) / Engine.physics_ticks_per_second * Engine.time_scale)
 		visible = true
@@ -1709,7 +1739,7 @@ func _ready() -> void:
 	get_tree().create_tween().tween_property(Sprite, \"modulate:a\", 1, 0.25)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if not facing == -1000:
 		move(float(1) / Engine.physics_ticks_per_second * Engine.time_scale)
 		visible = true
@@ -1782,10 +1812,6 @@ animations = [{
 "name": &"Leaf Attack",
 "speed": 20.0
 }]
-
-[sub_resource type="GDScript" id="GDScript_540hr"]
-script/source = "extends \"res://scripts/animated_sprite_2d.gd\"
-"
 
 [sub_resource type="GDScript" id="GDScript_gt76g"]
 resource_name = "Water Attack"
@@ -1887,48 +1913,6 @@ blend_mode = 3
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_bjha6"]
 blend_mode = 1
-
-[sub_resource type="Curve" id="Curve_kq1c5"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 1.4, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="CurveTexture" id="CurveTexture_ornx7"]
-curve = SubResource("Curve_kq1c5")
-
-[sub_resource type="Environment" id="Environment_kq1c5"]
-background_mode = 3
-tonemap_white = 0.51
-ssr_fade_in = 1.33149
-ssao_radius = 16.0
-ssao_intensity = 16.0
-ssao_power = 179.142
-ssao_detail = 5.0
-ssao_horizon = 1.0
-ssao_light_affect = 1.0
-ssao_ao_channel_affect = 1.0
-ssil_radius = 24.75
-ssil_intensity = 150.85
-ssil_normal_rejection = 0.0
-sdfgi_use_occlusion = true
-sdfgi_bounce_feedback = 1.99
-sdfgi_cascades = 8
-sdfgi_min_cell_size = 14.2
-sdfgi_cascade0_distance = 908.801
-sdfgi_max_distance = 232653.0
-glow_enabled = true
-glow_bloom = 0.1
-glow_blend_mode = 1
-glow_hdr_threshold = 1.51
-fog_mode = 1
-fog_light_energy = 16.0
-fog_sun_scatter = 10.15
-fog_density = 1.0
-fog_depth_curve = 4.0
-volumetric_fog_density = 1.0
-volumetric_fog_emission_energy = 3.4
-volumetric_fog_gi_inject = 2.16
-adjustment_enabled = true
-adjustment_color_correction = SubResource("CurveTexture_ornx7")
 
 [node name="Control" type="Control" node_paths=PackedStringArray("debugger", "vsync")]
 process_mode = 3
@@ -2200,6 +2184,25 @@ size_flags_horizontal = 3
 focus_mode = 0
 button_pressed = true
 text = "VSync"
+
+[node name="Graphics Selector" type="OptionButton" parent="CanvasLayer/Settings/Panel/GridContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+shortcut_feedback = false
+shortcut_in_tooltip = false
+flat = true
+selected = 0
+fit_to_longest_item = false
+allow_reselect = true
+item_count = 3
+popup/item_0/text = "High Graphics Quality"
+popup/item_0/id = 0
+popup/item_1/text = "Medium Graphics Quality"
+popup/item_1/id = 1
+popup/item_2/text = "Low Graphics Quality"
+popup/item_2/id = 2
 
 [node name="GameSpeed" type="SpinBox" parent="CanvasLayer/Settings/Panel/GridContainer"]
 visible = false
@@ -2506,7 +2509,6 @@ scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_4ccxe")
 animation = &"Leaf Attack"
 frame_progress = 0.652978
-script = SubResource("GDScript_540hr")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Attack 1"]
 position = Vector2(10, 0)
@@ -2725,7 +2727,7 @@ position = Vector2(51400, 5096)
 position = Vector2(51251, 5103)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
-environment = SubResource("Environment_kq1c5")
+environment = ExtResource("37_6ip5v")
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.1
@@ -2741,6 +2743,7 @@ ignore_time_scale = true
 [connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/Debugger" to="." method="_on_debugger_toggled"]
 [connection signal="item_selected" from="CanvasLayer/Settings/Panel/GridContainer/TPS Picker" to="." method="_on_tps_picker_item_selected"]
 [connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/VSync" to="." method="_on_vsync_toggled"]
+[connection signal="item_selected" from="CanvasLayer/Settings/Panel/GridContainer/Graphics Selector" to="." method="_on_graphics_selector_item_selected"]
 [connection signal="value_changed" from="CanvasLayer/Settings/Panel/GridContainer/GameSpeed" to="." method="_on_game_speed_value_changed"]
 [connection signal="body_entered" from="World/Foreground/Forest Relic" to="World/Wizard" method="_on_forest_relic_body_entered"]
 [connection signal="body_entered" from="World/Foreground/Water Relic" to="World/Wizard" method="_on_water_relic_body_entered"]

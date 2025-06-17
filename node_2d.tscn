@@ -43,12 +43,13 @@ script/source = "extends Control
 @export var global: Node = self
 var dev_mode: bool = false
 var config = ConfigFile.new()
+@export var debugger: CheckButton
+@export var vsync: CheckButton
 var err = config.load(\"user://config.cfg\")
 
 func _ready() -> void:
+	$CanvasLayer/Settings.modulate.a = 0
 	load_data(\"all\")
-	$CanvasLayer/Settings/Panel/GridContainer/VSync.connect(\"toggled\",_on_vsync_toggled)
-	$CanvasLayer/Settings/Panel/GridContainer/Debugger.connect(\"toggled\",_on_debugger_toggled)
 
 func _process(_float) -> void:
 	if Input.is_action_just_pressed(\"Freeze\") and dev_mode == true:
@@ -102,14 +103,14 @@ func _on_close_pressed() -> void:
 func save():
 	config.set_value(\"config\",\"dev_mode\",dev_mode)
 	config.set_value(\"config\",\"ticks_per_second\",Engine.physics_ticks_per_second)
-	config.set_value(\"config\",\"debugger_enabled\",$CanvasLayer/Settings/Panel/GridContainer/Debugger.button_pressed)
-	config.set_value(\"config\",\"vsync_enabled\",$CanvasLayer/Settings/Panel/GridContainer/VSync.button_pressed)
+	config.set_value(\"config\",\"debugger\",debugger.button_pressed)
+	config.set_value(\"config\",\"vsync\",vsync.button_pressed)
 	config.save(\"user://config.cfg\")
 
 func load_data(options: String = \"all\"):
 	if options == \"all\" or options == \"vsync\":
-		$CanvasLayer/Settings/Panel/GridContainer/VSync.button_pressed = config.get_value(\"config\", \"vsync_enabled\",true)
-		if config.get_value(\"config\", \"vsync_enabled\",true) == true:
+		vsync.button_pressed = config.get_value(\"config\", \"vsync\",true)
+		if config.get_value(\"config\", \"vsync\",true) == true:
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
 		else:
 			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
@@ -119,8 +120,8 @@ func load_data(options: String = \"all\"):
 		$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".select($\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_index(Engine.physics_ticks_per_second))
 	
 	if options == \"all\" or options == \"debugger\":
-		$CanvasLayer/Settings/Panel/GridContainer/Debugger.button_pressed = config.get_value(\"config\", \"debugger_enabled\",false)
-		if config.get_value(\"config\", \"debugger_enabled\",false) == false:
+		debugger.button_pressed = config.get_value(\"config\", \"debugger\",false)
+		if config.get_value(\"config\", \"debugger\",false) == false:
 			var tween1 = self.create_tween().tween_property($CanvasLayer/Debugger,\"modulate:a\",0,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 			var tween2 = self.create_tween().tween_property($CanvasLayer/Debugger,\"position:y\",50,0.2 * Engine.time_scale).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 			$Timer2.start()
@@ -144,16 +145,16 @@ func _on_tps_picker_item_selected(index: int) -> void:
 func _on_game_speed_value_changed(value: float) -> void:
 	Engine.time_scale = $CanvasLayer/Settings/Panel/GridContainer/GameSpeed.value
 
-func _on_vsync_toggled(toggled_on: bool) -> void:
-	save()
-	load_data(\"vsync\")
-
 func _on_animation_2_end() -> void:
 	$CanvasLayer/Debugger.visible = false
 
 func _on_debugger_toggled(toggled_on: bool) -> void:
 	save()
 	load_data(\"debugger\")
+
+func _on_vsync_toggled(toggled_on: bool) -> void:
+	save()
+	load_data(\"vsync\")
 "
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fs4d3"]
@@ -1929,7 +1930,7 @@ volumetric_fog_gi_inject = 2.16
 adjustment_enabled = true
 adjustment_color_correction = SubResource("CurveTexture_ornx7")
 
-[node name="Control" type="Control"]
+[node name="Control" type="Control" node_paths=PackedStringArray("debugger", "vsync")]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 15
@@ -1938,6 +1939,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = SubResource("GDScript_ei405")
+debugger = NodePath("CanvasLayer/Settings/Panel/GridContainer/Debugger")
+vsync = NodePath("CanvasLayer/Settings/Panel/GridContainer/VSync")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 process_mode = 3
@@ -2108,7 +2111,6 @@ libraries = {
 }
 
 [node name="Settings" type="PanelContainer" parent="CanvasLayer"]
-modulate = Color(1, 1, 1, 0)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -2732,7 +2734,9 @@ one_shot = true
 ignore_time_scale = true
 
 [connection signal="pressed" from="CanvasLayer/Settings/Panel/Back/Close" to="." method="_on_close_pressed"]
+[connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/Debugger" to="." method="_on_debugger_toggled"]
 [connection signal="item_selected" from="CanvasLayer/Settings/Panel/GridContainer/TPS Picker" to="." method="_on_tps_picker_item_selected"]
+[connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/VSync" to="." method="_on_vsync_toggled"]
 [connection signal="value_changed" from="CanvasLayer/Settings/Panel/GridContainer/GameSpeed" to="." method="_on_game_speed_value_changed"]
 [connection signal="body_entered" from="World/Foreground/Forest Relic" to="World/Wizard" method="_on_forest_relic_body_entered"]
 [connection signal="body_entered" from="World/Foreground/Water Relic" to="World/Wizard" method="_on_water_relic_body_entered"]

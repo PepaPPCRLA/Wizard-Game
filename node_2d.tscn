@@ -2157,18 +2157,20 @@ offset_left = 0.679996
 offset_top = -4.26801
 offset_right = 0.851929
 offset_bottom = -0.212036
-columns = 4
+columns = 2
 
 [node name="Debugger" type="CheckButton" parent="CanvasLayer/Settings/Panel/GridContainer"]
-custom_minimum_size = Vector2(314, 100)
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
+size_flags_horizontal = 3
 focus_mode = 0
 text = "Debugger"
 flat = true
 
 [node name="TPS Picker" type="OptionButton" parent="CanvasLayer/Settings/Panel/GridContainer"]
-custom_minimum_size = Vector2(314, 100)
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
+size_flags_horizontal = 3
 focus_mode = 0
 shortcut_feedback = false
 shortcut_in_tooltip = false
@@ -2191,15 +2193,16 @@ popup/item_5/text = "15 Physics Ticks Per Second"
 popup/item_5/id = 15
 
 [node name="VSync" type="CheckButton" parent="CanvasLayer/Settings/Panel/GridContainer"]
-custom_minimum_size = Vector2(314, 100)
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
+size_flags_horizontal = 3
 focus_mode = 0
 button_pressed = true
 text = "VSync"
 
 [node name="GameSpeed" type="SpinBox" parent="CanvasLayer/Settings/Panel/GridContainer"]
 visible = false
-custom_minimum_size = Vector2(314, 100)
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 theme_override_styles/up_down_buttons_separator = SubResource("StyleBoxEmpty_540hr")
 theme_override_styles/field_and_buttons_separator = SubResource("StyleBoxEmpty_6ip5v")

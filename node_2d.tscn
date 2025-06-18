@@ -982,14 +982,15 @@ var target_tps: int = 60
 
 func _ready() -> void:
 	$AnimationPlayer.play(\"spawn\")
+	$\"../../CanvasLayer/Spell Container/Spell 1/AnimationPlayer\".play(\"Fire Spell 1\")
 func _physics_process(_delta: float) -> void:
 	var physics_delta = float(1) / Engine.physics_ticks_per_second * Engine.time_scale
 	coyote_time -= physics_delta
 	sliding -= physics_delta
 	if Input.is_action_just_pressed(\"block\") and not $\"Force Sliding Req\".is_colliding():
-		$\"../../CanvasLayer/Block/AnimationPlayer\".play(\"block\")
+		$\"../../CanvasLayer/Spell Container/Block/AnimationPlayer\".play(\"block\")
 	elif Input.is_action_just_released(\"block\"):
-		$\"../../CanvasLayer/Block/AnimationPlayer\".play(\"unblock\")
+		$\"../../CanvasLayer/Spell Container/Block/AnimationPlayer\".play(\"unblock\")
 	if Input.is_action_pressed(\"block\") and not $\"Force Sliding Req\".is_colliding():
 		blocking = true
 		sliding = -1
@@ -1004,11 +1005,11 @@ func _physics_process(_delta: float) -> void:
 		var direction := Input.get_axis(\"left\", \"right\")
 		if Input.is_action_just_pressed(\"Spell 1\") and $\"Spell_1 Cooldown\".time_left <= 0 and blocking == false:
 			newspell(\"default\")
-			$\"../../CanvasLayer/Spell 1/AnimationPlayer\".play(\"Fire Spell 1\")
+			$\"../../CanvasLayer/Spell Container/Spell 1/AnimationPlayer\".play(\"Fire Spell 1\")
 
-		if Input.is_action_just_pressed(\"Spell 2\") and not $\"../../CanvasLayer/Water Spell/AnimationPlayer\".current_animation and blocking == false and relics >= 2:
+		if Input.is_action_just_pressed(\"Spell 2\") and not $\"../../CanvasLayer/Spell Container/Water Spell/AnimationPlayer\".current_animation and blocking == false and relics >= 2:
 			newspell(\"water\")
-			$\"../../CanvasLayer/Water Spell/AnimationPlayer\".play(\"attack\")
+			$\"../../CanvasLayer/Spell Container/Water Spell/AnimationPlayer\".play(\"attack\")
 		if is_on_floor():
 			coyote_time = 0.25
 		if not is_on_floor():
@@ -1250,7 +1251,7 @@ func _on_water_relic_body_entered(body: Node2D) -> void:
 		max_health = 200
 		health = max_health
 		$\"../../CanvasLayer/HealthBar/HealthBar\".scale.x = 1
-		$\"../../CanvasLayer/Water Spell/AnimationPlayer\".play(\"unlock\")
+		$\"../../CanvasLayer/Spell Container/Water Spell/AnimationPlayer\".play(\"unlock\")
 
 
 func _on_world_3_portal_body_entered(body: Node2D) -> void:
@@ -1423,30 +1424,6 @@ tracks/3/keys = {
 "update": 0,
 "values": [Vector2(1, 1)]
 }
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("../../CanvasLayer/Block/Spell 1 Overlay:modulate")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 0)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("../../CanvasLayer/Spell 1/Spell 1 Overlay:modulate")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 0)]
-}
 
 [sub_resource type="Animation" id="Animation_gt76g"]
 resource_name = "attack"
@@ -1601,30 +1578,6 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(0.34151, 1),
 "update": 0,
 "values": [Vector2(0, 1), Vector2(1, 1)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("../../CanvasLayer/Block/Spell 1 Overlay:modulate")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.366021, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("../../CanvasLayer/Spell 1/Spell 1 Overlay:modulate")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.366021, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2nhjh"]
@@ -1955,6 +1908,117 @@ vsync = NodePath("CanvasLayer/Settings/Panel/GridContainer/VSync")
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 process_mode = 3
 
+[node name="Spell Container" type="GridContainer" parent="CanvasLayer"]
+layout_direction = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -80.0
+offset_right = 156.0
+offset_bottom = -8.0
+grow_vertical = 0
+theme_override_constants/h_separation = 19
+columns = 3
+
+[node name="Spell 1" type="Panel" parent="CanvasLayer/Spell Container"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+
+[node name="Spell 1" type="TextureRect" parent="CanvasLayer/Spell Container/Spell 1"]
+material = SubResource("CanvasItemMaterial_fs4d3")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_fs4d3")
+expand_mode = 1
+
+[node name="Spell 1 Overlay" type="Panel" parent="CanvasLayer/Spell Container/Spell 1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/Spell Container/Spell 1"]
+libraries = {
+&"": SubResource("AnimationLibrary_2hxjc")
+}
+
+[node name="Block" type="Panel" parent="CanvasLayer/Spell Container"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+
+[node name="Spell 1" type="TextureRect" parent="CanvasLayer/Spell Container/Block"]
+material = SubResource("CanvasItemMaterial_fs4d3")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.944505, 0.944505)
+texture = ExtResource("3_7vxoj")
+
+[node name="Spell 1 Overlay" type="Panel" parent="CanvasLayer/Spell Container/Block"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/Spell Container/Block"]
+libraries = {
+&"": SubResource("AnimationLibrary_ebxd8")
+}
+
+[node name="Water Spell" type="Panel" parent="CanvasLayer/Spell Container"]
+visible = false
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+
+[node name="Spell 1" type="TextureRect" parent="CanvasLayer/Spell Container/Water Spell"]
+material = SubResource("CanvasItemMaterial_fs4d3")
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.052
+anchor_top = 0.056
+anchor_right = 0.944
+anchor_bottom = 0.948
+offset_left = -3.744
+offset_top = -0.0320001
+offset_right = 0.0319977
+offset_bottom = 3.744
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.944505, 0.944505)
+texture = ExtResource("24_bjha6")
+stretch_mode = 5
+
+[node name="Spell 1 Overlay" type="Panel" parent="CanvasLayer/Spell Container/Water Spell"]
+modulate = Color(1, 1, 1, 0.433807)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/Spell Container/Water Spell"]
+libraries = {
+&"": SubResource("AnimationLibrary_ornx7")
+}
+
 [node name="Debugger" type="PanelContainer" parent="CanvasLayer"]
 visible = false
 anchors_preset = -1
@@ -1996,131 +2060,8 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("15_7vxoj")
 text = "Health: 100"
 
-[node name="Spell 1" type="Panel" parent="CanvasLayer"]
-anchors_preset = -1
-anchor_left = 0.958
-anchor_top = 0.926
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.383911
-offset_top = -0.0480347
-offset_right = -8.0
-offset_bottom = -8.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Spell 1" type="TextureRect" parent="CanvasLayer/Spell 1"]
-material = SubResource("CanvasItemMaterial_fs4d3")
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_fs4d3")
-
-[node name="Spell 1 Overlay" type="Panel" parent="CanvasLayer/Spell 1"]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/Spell 1"]
-libraries = {
-&"": SubResource("AnimationLibrary_2hxjc")
-}
-
-[node name="Block" type="Panel" parent="CanvasLayer"]
-anchors_preset = -1
-anchor_left = 0.91
-anchor_top = 0.926
-anchor_right = 0.953
-anchor_bottom = 1.0
-offset_left = -0.320068
-offset_top = -0.0480347
-offset_right = -9.71204
-offset_bottom = -8.0
-grow_horizontal = 0
-grow_vertical = 0
-
-[node name="Spell 1" type="TextureRect" parent="CanvasLayer/Block"]
-material = SubResource("CanvasItemMaterial_fs4d3")
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = 1.0
-offset_right = 1.0
-offset_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.944505, 0.944505)
-texture = ExtResource("3_7vxoj")
-stretch_mode = 5
-
-[node name="Spell 1 Overlay" type="Panel" parent="CanvasLayer/Block"]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/Block"]
-libraries = {
-&"": SubResource("AnimationLibrary_ebxd8")
-}
-
-[node name="Water Spell" type="Panel" parent="CanvasLayer"]
-visible = false
-anchors_preset = -1
-anchor_left = 0.861
-anchor_top = 0.926
-anchor_right = 0.903
-anchor_bottom = 1.0
-offset_left = 1.12793
-offset_top = 0.951965
-offset_right = -7.11218
-offset_bottom = -7.0
-grow_horizontal = 0
-grow_vertical = 0
-
-[node name="Spell 1" type="TextureRect" parent="CanvasLayer/Water Spell"]
-material = SubResource("CanvasItemMaterial_fs4d3")
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = 1.0
-offset_right = 1.0
-offset_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.944505, 0.944505)
-texture = ExtResource("24_bjha6")
-stretch_mode = 5
-
-[node name="Spell 1 Overlay" type="Panel" parent="CanvasLayer/Water Spell"]
-modulate = Color(1, 1, 1, 0.433807)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/Water Spell"]
-libraries = {
-&"": SubResource("AnimationLibrary_ornx7")
-}
-
 [node name="Settings" type="PanelContainer" parent="CanvasLayer"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -2236,7 +2177,7 @@ offset_left = 56.0
 offset_top = 684.0
 offset_right = 1784.0
 offset_bottom = 888.0
-columns = 6
+columns = 2
 
 [node name="Invincibility" type="CheckButton" parent="CanvasLayer/Settings/Panel/Dev Tools"]
 custom_minimum_size = Vector2(0, 25)

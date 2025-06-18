@@ -61,10 +61,10 @@ func _process(_float) -> void:
 			get_tree().paused = false
 	
 	if Input.is_action_just_pressed(\"Speed Change Toggle\") and dev_mode == true:
-		if Engine.time_scale == $CanvasLayer/Settings/Panel/GridContainer/GameSpeed.value:
+		if Engine.time_scale == $\"CanvasLayer/Settings/Panel/Dev Tools/GameSpeed\".value:
 			Engine.time_scale = 1
 		else:
-			Engine.time_scale = $CanvasLayer/Settings/Panel/GridContainer/GameSpeed.value
+			Engine.time_scale = $\"CanvasLayer/Settings/Panel/Dev Tools/GameSpeed\".value
 
 	
 	$CanvasLayer/Debugger/Debugger_Text.text = \"FPS: %d\\n\" % Engine.get_frames_per_second() + \\
@@ -111,6 +111,8 @@ func save(options: String = \"all\"):
 		config.set_value(\"config\",\"vsync\",vsync.button_pressed)
 	if options == \"all\" or options == \"graphics\":
 		config.set_value(\"config\",\"graphics\",$\"CanvasLayer/Settings/Panel/GridContainer/Graphics Selector\".get_selected_id())
+	if options == \"all\" or options == \"invincibility\":
+		config.set_value(\"config\", \"invincibility\", $\"CanvasLayer/Settings/Panel/Dev Tools/Invincibility\".button_pressed)
 	config.save(\"user://config.cfg\")
 
 func load_data(options: String = \"all\"):
@@ -161,17 +163,21 @@ func load_data(options: String = \"all\"):
 
 	if options == \"all\" or options == \"dev_mode\":
 		if dev_mode:
-			$CanvasLayer/Settings/Panel/GridContainer/GameSpeed.visible = true
+			$\"CanvasLayer/Settings/Panel/Dev Tools/GameSpeed\".visible = true
 			$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".add_item(\"5 Ticks Per Second\", 5)
+			$\"CanvasLayer/Settings/Panel/Dev Tools\".visible = true
 			print(\"Developer Mode\")
-
+		else:
+			$\"CanvasLayer/Settings/Panel/Dev Tools\".visible = false
+	if options == \"all\" or options == \"invincibility\":
+		$\"CanvasLayer/Settings/Panel/Dev Tools/Invincibility\".button_pressed = config.get_value(\"config\", \"invincibility\", false)
 func _on_tps_picker_item_selected(index: int) -> void:
 	Engine.physics_ticks_per_second = $\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_id(index)
 	save(\"ticks_per_second\")
 
 
 func _on_game_speed_value_changed(value: float) -> void:
-	Engine.time_scale = $CanvasLayer/Settings/Panel/GridContainer/GameSpeed.value
+	Engine.time_scale = $\"CanvasLayer/Settings/Panel/Dev Tools/GameSpeed\".value
 
 func _on_animation_2_end() -> void:
 	$CanvasLayer/Debugger.visible = false
@@ -192,6 +198,11 @@ func _on_debugger_toggled(_s) -> void:
 func _on_vsync_toggled(_s) -> void:
 	save(\"vsync\")
 	load_data(\"vsync\")
+
+
+func _on_invincibility_toggled(_toggled_on: bool) -> void:
+	save(\"invincibility\")
+	load_data(\"invincibility\")
 "
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fs4d3"]
@@ -1163,7 +1174,8 @@ func kill() -> void:
 func damaged(damage: float) -> void:
 	if sliding < 0:
 		if blocking == false:
-			health -= damage
+			if !$\"../../CanvasLayer/Settings/Panel/Dev Tools/Invincibility\".button_pressed:
+				health -= damage
 			$AnimationPlayer.queue(\"damaged\")
 			var tween = get_tree().create_tween()
 			tween.tween_property($\"../../CanvasLayer/HealthBar/HealthBar\", \"scale\", Vector2(health / max_health, 1), 0.1)
@@ -2109,7 +2121,6 @@ libraries = {
 }
 
 [node name="Settings" type="PanelContainer" parent="CanvasLayer"]
-visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -2219,10 +2230,25 @@ popup/item_1/id = 1
 popup/item_2/text = "Low Graphics Quality"
 popup/item_2/id = 2
 
-[node name="GameSpeed" type="SpinBox" parent="CanvasLayer/Settings/Panel/GridContainer"]
-visible = false
-custom_minimum_size = Vector2(0, 100)
+[node name="Dev Tools" type="GridContainer" parent="CanvasLayer/Settings/Panel"]
 layout_mode = 2
+offset_left = 56.0
+offset_top = 684.0
+offset_right = 1784.0
+offset_bottom = 888.0
+columns = 6
+
+[node name="Invincibility" type="CheckButton" parent="CanvasLayer/Settings/Panel/Dev Tools"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 0
+text = "Invincibility"
+flat = true
+
+[node name="GameSpeed" type="SpinBox" parent="CanvasLayer/Settings/Panel/Dev Tools"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/up_down_buttons_separator = SubResource("StyleBoxEmpty_540hr")
 theme_override_styles/field_and_buttons_separator = SubResource("StyleBoxEmpty_6ip5v")
 theme_override_styles/down_background_disabled = SubResource("StyleBoxEmpty_q5dlx")
@@ -2766,7 +2792,8 @@ ignore_time_scale = true
 [connection signal="item_selected" from="CanvasLayer/Settings/Panel/GridContainer/TPS Picker" to="." method="_on_tps_picker_item_selected"]
 [connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/VSync" to="." method="_on_vsync_toggled"]
 [connection signal="item_selected" from="CanvasLayer/Settings/Panel/GridContainer/Graphics Selector" to="." method="_on_graphics_selector_item_selected"]
-[connection signal="value_changed" from="CanvasLayer/Settings/Panel/GridContainer/GameSpeed" to="." method="_on_game_speed_value_changed"]
+[connection signal="toggled" from="CanvasLayer/Settings/Panel/Dev Tools/Invincibility" to="." method="_on_invincibility_toggled"]
+[connection signal="value_changed" from="CanvasLayer/Settings/Panel/Dev Tools/GameSpeed" to="." method="_on_game_speed_value_changed"]
 [connection signal="body_entered" from="World/Foreground/Forest Relic" to="World/Wizard" method="_on_forest_relic_body_entered"]
 [connection signal="body_entered" from="World/Foreground/Water Relic" to="World/Wizard" method="_on_water_relic_body_entered"]
 [connection signal="body_entered" from="World/Foreground/World 2 Portal" to="World/Wizard" method="_on_world_2_portal_body_entered"]

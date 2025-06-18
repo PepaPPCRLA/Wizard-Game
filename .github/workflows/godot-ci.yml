@@ -36,4 +36,4 @@ jobs:
       #     echo test, and deploy your project.
 
       - name: godot-ci
-        uses: abarichello/godot-ci@4.4.1-stable
+        uses: abarichello/godot-ci@gh-actions

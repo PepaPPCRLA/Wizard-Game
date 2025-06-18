@@ -36,7 +36,7 @@
 [ext_resource type="Script" uid="uid://df52e83y66nco" path="res://scripts/lights.gd" id="24_cnnru"]
 [ext_resource type="Texture2D" uid="uid://dceqfiyaf83uf" path="res://textures/Lava Monster Projectile_0005.png" id="28_4qosj"]
 [ext_resource type="PackedScene" uid="uid://yh8xbbcfwgny" path="res://lava_monster.tscn" id="30_2u7jv"]
-[ext_resource type="Environment" uid="uid://y2fwm37larjk" path="res://World Enviroments/node_2d.tres" id="37_6ip5v"]
+[ext_resource type="Environment" uid="uid://y2fwm37larjk" path="res://world-environments/node_2d.tres" id="37_6ip5v"]
 
 [sub_resource type="GDScript" id="GDScript_ei405"]
 resource_name = "Debugger"
@@ -143,7 +143,7 @@ func load_data(options: String = \"all\"):
 		match graphics:
 			0:
 				$World/Sun.enabled = true
-				$World/WorldEnvironment.environment = load(\"res://World Enviroments/node_2d.tres\")
+				$World/WorldEnvironment.environment = load(\"res://world-environments/node_2d.tres\")
 				$World/Sky.modulate = Color8(217, 217, 217)
 				$World/Sky.color = Color8(155, 255, 255)
 			1:

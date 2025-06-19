@@ -145,7 +145,7 @@ func load_data(options: String = \"all\"):
 		match graphics:
 			0:
 				$World/Sun.enabled = true
-				$World/WorldEnvironment.environment = load(\"res://world-environments/node_2d.tres\")
+				$World/WorldEnvironment.environment = load(\"res://world_environments/node_2d.tres\")
 				$World/Sky.modulate = Color8(217, 217, 217)
 				$World/Sky.color = Color8(155, 255, 255)
 				$World/Sun.shadow_filter = 2

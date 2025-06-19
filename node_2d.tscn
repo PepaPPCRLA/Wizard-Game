@@ -1,4 +1,4 @@
-[gd_scene load_steps=167 format=4 uid="uid://4kuhak4ql42j"]
+[gd_scene load_steps=172 format=4 uid="uid://4kuhak4ql42j"]
 
 [ext_resource type="Texture2D" uid="uid://ca58cotvw4d4s" path="res://textures/Spell_1_ui.png" id="2_fs4d3"]
 [ext_resource type="Texture2D" uid="uid://dlyw7ftdhbgko" path="res://textures/Wood Tileset.png" id="2_ir8iy"]
@@ -36,7 +36,10 @@
 [ext_resource type="Script" uid="uid://df52e83y66nco" path="res://scripts/lights.gd" id="24_cnnru"]
 [ext_resource type="Texture2D" uid="uid://dceqfiyaf83uf" path="res://textures/Lava Monster Projectile_0005.png" id="28_4qosj"]
 [ext_resource type="PackedScene" uid="uid://yh8xbbcfwgny" path="res://lava_monster.tscn" id="30_2u7jv"]
-[ext_resource type="Environment" uid="uid://y2fwm37larjk" path="res://world-environments/node_2d.tres" id="37_6ip5v"]
+[ext_resource type="Environment" uid="uid://y2fwm37larjk" path="res://world_environments/node_2d.tres" id="37_6ip5v"]
+[ext_resource type="Texture2D" uid="uid://sp0edjlvol6a" path="res://textures/Torch.png" id="38_7plk7"]
+[ext_resource type="Texture2D" uid="uid://dt7kl3kh3rpum" path="res://normals/Torch_n.png" id="39_fbwgr"]
+[ext_resource type="Texture2D" uid="uid://cwrxn2sjcixga" path="res://specular/Torch_s.png" id="40_7mj2a"]
 
 [sub_resource type="GDScript" id="GDScript_ei405"]
 resource_name = "Debugger"
@@ -1880,6 +1883,16 @@ blend_mode = 3
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_bjha6"]
 blend_mode = 1
 
+[sub_resource type="CanvasTexture" id="CanvasTexture_fshgd"]
+diffuse_texture = ExtResource("38_7plk7")
+normal_texture = ExtResource("39_fbwgr")
+specular_texture = ExtResource("40_7mj2a")
+specular_shininess = 0.32
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7plk7"]
+particle_flag_disable_z = true
+gravity = Vector3(0, 0, 0)
+
 [node name="Control" type="Control" node_paths=PackedStringArray("debugger", "vsync")]
 process_mode = 3
 layout_mode = 3
@@ -2705,6 +2718,25 @@ ignore_time_scale = true
 wait_time = 0.1
 one_shot = true
 ignore_time_scale = true
+
+[node name="Assets" type="Node" parent="."]
+
+[node name="Torch" type="Sprite2D" parent="Assets"]
+z_index = -5
+position = Vector2(-16, 344)
+scale = Vector2(4, 4)
+texture = SubResource("CanvasTexture_fshgd")
+
+[node name="Light" type="PointLight2D" parent="Assets/Torch"]
+position = Vector2(0.5, -6)
+color = Color(1, 0.878431, 0.168627, 1)
+texture = ExtResource("22_24dk6")
+texture_scale = 0.3
+height = 29.0
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="Assets/Torch"]
+position = Vector2(0.5, -6)
+process_material = SubResource("ParticleProcessMaterial_7plk7")
 
 [connection signal="pressed" from="CanvasLayer/Settings/Panel/Back/Close" to="." method="_on_close_pressed"]
 [connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/Debugger" to="." method="_on_debugger_toggled"]

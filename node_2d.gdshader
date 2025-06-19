@@ -1,7 +1,6 @@
 shader_type canvas_item;
-render_mode unshaded;
 uniform float timeScaleFactor = .04;
-uniform int amount = 40;
+
 // Make sure to use a seamless noise texture
 uniform sampler2D noise_texture: repeat_enable, filter_linear;
 
@@ -16,7 +15,7 @@ mat2 makem2(float theta) {
 }
 
 float noise(vec2 x) {
-	return texture(noise_texture, x * 0.25).x;
+	return texture(noise_texture, x * .1).x;
 }
 
 vec2 gradn(vec2 p) {
@@ -30,7 +29,7 @@ float flow(vec2 p) {
 	float z = 2.;
 	float rz = 0.;
 	vec2 bp = p;
-
+	
 	for(float i = 1.; i < 7.; ++i) {
 		p += localTime() * .6;
 		bp += localTime() * 1.9;
@@ -46,20 +45,18 @@ float flow(vec2 p) {
 	return rz;
 }
 
-
-
 void fragment() {
-	vec2 resolution = 5.0 / SCREEN_PIXEL_SIZE;
+	vec2 resolution = 2.5 / SCREEN_PIXEL_SIZE;
 	vec2 fragCoord = FRAGCOORD.xy;
 	fragCoord = vec2(fragCoord.x, resolution.y - fragCoord.y);
 	vec2 p = fragCoord / resolution - 0.5;
-
+	
 	p.x *= resolution.x / resolution.y;
 	p *= 3.;
-
+	
 	float rz = flow(p);
 	vec3 col = vec3(.2, .07, .01) / rz;
 	col = pow(col, vec3(1.4));
-
+	
 	COLOR = vec4(col, 1.0);
 }

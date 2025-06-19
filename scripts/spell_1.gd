@@ -17,6 +17,7 @@ func _ready() -> void:
 		position = Wizard.position + Vector2(10,10)
 	else:
 		position = Wizard.position + Vector2(10,10)
+	last_position = position
 	Sprite.modulate.a = 0
 	get_tree().create_tween().tween_property(Sprite, "modulate:a", 1, 0.25)
 	await get_tree().create_timer(5).timeout

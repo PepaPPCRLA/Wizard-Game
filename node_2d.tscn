@@ -20,7 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://chw8kaxub22yj" path="res://spell_1.tscn" id="11_hqns4"]
 [ext_resource type="Texture2D" uid="uid://b0113cl7uiyah" path="res://textures/lava_glow.png" id="12_2hxjc"]
 [ext_resource type="PackedScene" uid="uid://devxyhnuigd0c" path="res://forest_monster.tscn" id="12_e8dv2"]
-[ext_resource type="Shader" uid="uid://ccn5hyi48c2j4" path="res://shaders/node_2d.gdshader" id="13_kq1c5"]
+[ext_resource type="Shader" uid="uid://b7pngxnt50c8t" path="res://node_2d.gdshader" id="13_6ip5v"]
 [ext_resource type="FontFile" uid="uid://doxkm432l8txb" path="res://fonts/Pixellettersfull-BnJ5.ttf" id="15_7vxoj"]
 [ext_resource type="Texture2D" uid="uid://c6sikavlpiiak" path="res://textures/Forest Monster Projectile_0001.png" id="16_fs4d3"]
 [ext_resource type="Texture2D" uid="uid://xkeqiuhx5x6g" path="res://textures/Forest Monster Projectile_0002.png" id="17_7vxoj"]
@@ -148,11 +148,13 @@ func load_data(options: String = \"all\"):
 				$World/WorldEnvironment.environment = load(\"res://world-environments/node_2d.tres\")
 				$World/Sky.modulate = Color8(217, 217, 217)
 				$World/Sky.color = Color8(155, 255, 255)
+				$World/Sun.shadow_filter = 2
 			1:
 				$World/Sun.enabled = true
 				$World/WorldEnvironment.environment = null
 				$World/Sky.modulate = Color8(217, 217, 217)
 				$World/Sky.color = Color8(155, 255, 255)
+				$World/Sun.shadow_filter = 1
 			2:
 				$World/Sun.enabled = false
 				$World/WorldEnvironment.environment = null
@@ -815,28 +817,14 @@ size = Vector2(37, 116)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1fr6y"]
 size = Vector2(6146.75, 107.5)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ornx7"]
-render_priority = 0
-shader = ExtResource("13_kq1c5")
-shader_parameter/dark_lava_color = Color(0.611765, 0, 0, 1)
-shader_parameter/light_lava_color = Color(1, 0.777418, 0.376985, 1)
-shader_parameter/speed = 1.19
-shader_parameter/scale = 4.347
-shader_parameter/sharpness = 7.155
-shader_parameter/emission_intensity = 1.632
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6ip5v"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_kq1c5"]
-render_priority = 0
-shader = ExtResource("13_kq1c5")
-shader_parameter/dark_lava_color = Color(0.611765, 0, 0, 1)
-shader_parameter/light_lava_color = Color(1, 0.777418, 0.376985, 1)
-shader_parameter/speed = 0.477
-shader_parameter/scale = 10.0
-shader_parameter/sharpness = 23.721
-shader_parameter/emission_intensity = 1.133
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c4wnb"]
+shader = ExtResource("13_6ip5v")
+shader_parameter/timeScaleFactor = 0.04
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_6ip5v")
 
 [sub_resource type="BoxMesh" id="BoxMesh_cnnru"]
-material = SubResource("ShaderMaterial_kq1c5")
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_x0ka3"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
@@ -1713,7 +1701,6 @@ func _ready() -> void:
 	$AnimatedSprite2D.play(\"Leaf Attack\")
 	Sprite.modulate.a = 0
 	last_position = position
-	#$\"Hit Detection Improver\".target_position = position
 	get_tree().create_tween().tween_property(Sprite, \"modulate:a\", 1, 0.25)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -1747,19 +1734,19 @@ func move(delta):
 	else:
 		$CollisionShape2D.disabled = false
 		Sprite.speed_scale = 1
-#
-#func _on_body_shape_entered(_body_rid: RID, body: Node2D, _body_shape_index: int, _local_shape_index: int) -> void:
-		#if not facing == -1000:
-			#if body == Wizard:
-				#Wizard.damaged(5)
-			#else:
-				#$CollisionShape2D.set_deferred(\"disabled\", 1)
-				#initialSpeed = Vector2.ZERO
-				#Sprite.stop()
-				#await get_tree().create_timer(15).timeout
-				#get_tree().create_tween().tween_property(Sprite, \"modulate:a\", 0, 0.25)
-				#z_index = -1
-			#queue_free()
+
+func _on_body_shape_entered(_body_rid: RID, body: Node2D, _body_shape_index: int, _local_shape_index: int) -> void:
+		if not facing == -1000:
+			if body == Wizard:
+				Wizard.damaged(5)
+			else:
+				$CollisionShape2D.set_deferred(\"disabled\", 1)
+				initialSpeed = Vector2.ZERO
+				Sprite.stop()
+				await get_tree().create_timer(15).timeout
+				get_tree().create_tween().tween_property(Sprite, \"modulate:a\", 0, 0.25)
+				z_index = -1
+			queue_free()
 
 func explode():
 	exploded = true
@@ -2236,6 +2223,8 @@ rotation = -0.541052
 energy = 0.5
 shadow_enabled = true
 shadow_color = Color(0, 0, 0, 0.847059)
+shadow_filter = 2
+shadow_filter_smooth = 1.0
 height = 0.5
 
 [node name="Foreground" type="TileMapLayer" parent="World"]
@@ -2312,20 +2301,18 @@ position = Vector2(1314.75, 637)
 scale = Vector2(2.1, 1)
 energy = 3.65
 shadow_enabled = true
-shadow_color = Color(0.44, 0.146667, 0, 1)
-shadow_filter = 1
+shadow_color = Color(0.44, 0.147, 0, 1)
+shadow_filter = 2
 texture = ExtResource("12_2hxjc")
 offset = Vector2(0, -1000)
-height = 8335.0
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Foreground/Lava"]
 position = Vector2(3012.25, -351.125)
 scale = Vector2(302.225, 6.4375)
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="World/Foreground/Lava"]
-modulate = Color(0.381703, 0.381703, 0.381703, 1)
-material = SubResource("ShaderMaterial_ornx7")
-position = Vector2(1336.25, -300)
+[node name="Lava" type="MeshInstance2D" parent="World/Foreground/Lava"]
+material = SubResource("ShaderMaterial_c4wnb")
+position = Vector2(1307.5, -291.25)
 scale = Vector2(2275, 343.25)
 mesh = SubResource("BoxMesh_cnnru")
 
@@ -2506,7 +2493,6 @@ shape = SubResource("CircleShape2D_5bpkj")
 [node name="Hit Detection Improver" type="RayCast2D" parent="World/Attack 1"]
 position = Vector2(10, 0)
 target_position = Vector2(0, 0)
-collision_mask = 4
 hit_from_inside = true
 
 [node name="Attack 2" type="Area2D" parent="World"]
@@ -2566,10 +2552,6 @@ Press \"E\" to fire a projectile at it
 and try to block with \"Q\" because
 you only have 100 health"
 
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Controls/Enemy Info"]
-position = Vector2(191.5, 61.5)
-scale = Vector2(20.15, 7.15)
-
 [node name="Advanced Movement Tech" type="Label" parent="World/Controls"]
 z_index = -1
 layout_mode = 0
@@ -2593,10 +2575,6 @@ jumps and turns (so people don't complain)
 sliding while holding the opposite
 directional key
 - Blocking will not let you grab onto walls"
-
-[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="World/Controls/Advanced Movement Tech"]
-position = Vector2(308, 215.5)
-scale = Vector2(31.8, 22.55)
 
 [node name="Label" type="Label" parent="World/Controls"]
 layout_mode = 0

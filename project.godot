@@ -34,6 +34,10 @@ window/warnings/shadowed_global_identifier=1
 window/warnings/shadowed_variable_base_class=1
 window/warnings/shadowed_variable=1
 
+[gui]
+
+theme/lcd_subpixel_layout=0
+
 [input]
 
 ui_accept={

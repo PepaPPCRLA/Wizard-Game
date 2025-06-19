@@ -9,7 +9,7 @@ uniform float frequency : hint_range(0., 1000. , 1.) = 3.;
 uniform float compress : hint_range(1., 2. , 0.01) = 1.;
 uniform float add_light : hint_range(0., 2. , 0.01) = 0.;
 
-uniform float scale : hint_range(0., 2. , 0.01) = 1.;
+uniform float scale : hint_range(0., 10. , 0.01) = 1.;
 uniform float speed : hint_range(-1000., 1000. , 0.01) = 1.;
 uniform float x_angle: hint_range(-1.57, 1.57, 0.01) = 1.57;
 uniform float y_angle: hint_range(-1.57, 1.57, 0.01) = 1.57;

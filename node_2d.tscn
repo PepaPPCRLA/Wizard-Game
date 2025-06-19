@@ -1,4 +1,4 @@
-[gd_scene load_steps=174 format=4 uid="uid://4kuhak4ql42j"]
+[gd_scene load_steps=176 format=4 uid="uid://4kuhak4ql42j"]
 
 [ext_resource type="Material" uid="uid://bw6dr33oq4iwo" path="res://shaders/menu_bg.tres" id="1_fbwgr"]
 [ext_resource type="Texture2D" uid="uid://ca58cotvw4d4s" path="res://textures/Spell_1_ui.png" id="2_fs4d3"]
@@ -1008,7 +1008,6 @@ var target_tps: int = 60
 func _ready() -> void:
 	$AnimationPlayer.play(\"spawn\")
 	$\"../../CanvasLayer/Spell Container/Spell 1/AnimationPlayer\".play(\"Fire Spell 1\")
-	_on_world_3_portal_body_entered(self)
 func _physics_process(_delta: float) -> void:
 	var physics_delta = float(1) / Engine.physics_ticks_per_second * Engine.time_scale
 	coyote_time -= physics_delta

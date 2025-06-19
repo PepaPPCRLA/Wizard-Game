@@ -30,7 +30,7 @@ var health: float = 60
 const SPEED: int = 100
 var facing: int = 0
 var dir : float
-@export var target: Node = null
+var target: Node = null
 @onready var nav: NavigationAgent2D = $NavigationAgent2D
 @onready var AniPlay: AnimationPlayer = $AnimationPlayer
 @onready var attack: AnimationPlayer = $AttackPlayer
@@ -44,6 +44,7 @@ func _ready() -> void:
 	$AnimatedSprite2D.play(\"idle\")
 	startpos = global_position
 	var e = VisibleOnScreenNotifier2D.new()
+	target = $\"../../Wizard\"
 	e.name = \"e\"
 	add_child(e)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -53,11 +54,11 @@ func _physics_process(_delta: float) -> void:
 
 func Attack2():
 	if $e.is_on_screen():
-		var attack2 = $\"../Attack 2\".duplicate()
-		attack2.initialSpeed = ($\"../Wizard\".global_position - self.global_position).normalized() * 750
+		var attack2 = $\"../../Attack 2\".duplicate()
+		attack2.initialSpeed = (target.global_position - self.global_position).normalized() * 750
 		attack2.position = position
 		attack2.facing = abs(velocity.x) / velocity.x
-		attack2.look_at($\"../Wizard\".global_position)
+		attack2.look_at(target.global_position)
 		add_sibling(attack2)
 		attack.play(\"attack\")
 
@@ -74,8 +75,6 @@ func damage(damage: int):
 
 func _on_pathfinder_interval_timeout() -> void:
 	if $e.is_on_screen() or !nav.is_navigation_finished():
-		if !target:
-			target = $\"../Wizard\"
 		match intent:
 			\"idle\":
 				nav.target_position = startpos

@@ -19,7 +19,7 @@ var health: float = 30
 const SPEED: int = 100
 var facing: float = 0
 var dir: float
-@export var target: Node = null
+var target: Node = null
 @onready var nav: NavigationAgent2D = $NavigationAgent2D
 @onready var AniPlay: AnimationPlayer = $AnimationPlayer
 @onready var movement: AnimationPlayer = $MovePlayer
@@ -38,6 +38,7 @@ func _ready() -> void:
 	add_child(e)
 	await get_tree().create_timer(randf_range(0, 1)).timeout
 	$\"Pathfinder Interval\".start()
+	target = $\"../../Wizard\"
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 
 func _physics_process(_delta: float) -> void:
@@ -84,11 +85,11 @@ func animations():
 
 func Attack1():
 	if $e.is_on_screen():
-		var attack1 = $\"../Attack 1\".duplicate()
-		attack1.initialSpeed = ($\"../Wizard\".global_position - self.global_position).normalized() * 750
+		var attack1 = $\"../../Attack 1\".duplicate()
+		attack1.initialSpeed = (target.global_position - self.global_position).normalized() * 750
 		attack1.position = position + Vector2(0, -22)
 		attack1.facing = facing
-		attack1.look_at($\"../Wizard\".global_position)
+		attack1.look_at(target.global_position)
 		add_sibling(attack1)
 		attack.play(\"attack\")
 
@@ -105,8 +106,6 @@ func damage(damage):
 
 func _on_pathfinder_interval_timeout() -> void:
 	if $e.is_on_screen() or !nav.is_navigation_finished():
-		if !target:
-			target = $\"../Wizard\"
 		$RayCast2D.target_position = to_local(target.position)
 		if intent == \"approach\":
 			nav.target_position = target.global_position

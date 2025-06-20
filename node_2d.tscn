@@ -1015,6 +1015,8 @@ func _ready() -> void:
 	$AnimationPlayer.play(\"spawn\")
 	$\"../../CanvasLayer/Spell Container/Spell 1/AnimationPlayer\".play(\"Fire Spell 1\")
 func _physics_process(_delta: float) -> void:
+	if Input.is_action_just_pressed(\"reset\"):
+		kill(\"reset\")
 	var physics_delta = float(1) / Engine.physics_ticks_per_second * Engine.time_scale
 	coyote_time -= physics_delta
 	sliding -= physics_delta
@@ -1185,7 +1187,7 @@ func newspell(type) -> void:
 			add_sibling(newSpell)
 			$AttackPlayer.queue(\"attack\")
 
-func kill() -> void:
+func kill(type = \"unknown\") -> void:
 	health = 0
 	var tween = get_tree().create_tween()
 	tween.tween_property($\"../../CanvasLayer/HealthBar/HealthBar\", \"scale\", Vector2(health / max_health, 1), 0.1)
@@ -1199,7 +1201,10 @@ func kill() -> void:
 	$\"../../CanvasLayer/HealthBar/HealthBar\".visible = true
 	health = max_health
 	position = checkpoint
-	await get_tree().create_timer(0.5).timeout
+	if type != \"reset\":
+		await get_tree().create_timer(0.5).timeout
+	else:
+		await get_tree().create_timer(0.1).timeout
 	$AnimationPlayer.play(\"spawn\")
 	state = \"alive\"
 
@@ -1420,6 +1425,30 @@ tracks/3/keys = {
 "update": 0,
 "values": [Vector2(1, 1)]
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Lights:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Lights:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_gt76g"]
 resource_name = "attack"
@@ -1507,6 +1536,30 @@ tracks/2/keys = {
 "update": 0,
 "values": [Vector2(0, 0), Vector2(0, 200)]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Lights:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.966667),
+"transitions": PackedFloat32Array(1, 0.392292, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 80), Vector2(0, 240)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Lights:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.433333, 0.866667),
+"transitions": PackedFloat32Array(0.366021, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_24dk6"]
 resource_name = "heal"
@@ -1574,6 +1627,18 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(0.34151, 1),
 "update": 0,
 "values": [Vector2(0, 1), Vector2(1, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Lights:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.34151, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2nhjh"]

@@ -21,7 +21,7 @@
 [ext_resource type="PackedScene" uid="uid://chw8kaxub22yj" path="res://spell_1.tscn" id="11_hqns4"]
 [ext_resource type="Texture2D" uid="uid://b0113cl7uiyah" path="res://textures/lava_glow.png" id="12_2hxjc"]
 [ext_resource type="PackedScene" uid="uid://devxyhnuigd0c" path="res://forest_monster.tscn" id="12_e8dv2"]
-[ext_resource type="Shader" uid="uid://b7pngxnt50c8t" path="res://node_2d.gdshader" id="13_6ip5v"]
+[ext_resource type="Shader" uid="uid://b7pngxnt50c8t" path="res://shaders/node_2d.gdshader" id="13_6ip5v"]
 [ext_resource type="FontFile" uid="uid://doxkm432l8txb" path="res://fonts/Pixellettersfull-BnJ5.ttf" id="15_7vxoj"]
 [ext_resource type="Texture2D" uid="uid://c6sikavlpiiak" path="res://textures/Forest Monster Projectile_0001.png" id="16_fs4d3"]
 [ext_resource type="Texture2D" uid="uid://xkeqiuhx5x6g" path="res://textures/Forest Monster Projectile_0002.png" id="17_7vxoj"]
@@ -2560,6 +2560,7 @@ script = SubResource("GDScript_cnnru")
 texture_filter = 1
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_540hr")
+script = ExtResource("23_ornx7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Spell 2"]
 position = Vector2(10, 0)
@@ -2602,6 +2603,7 @@ scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_4ccxe")
 animation = &"Leaf Attack"
 frame_progress = 0.652978
+script = ExtResource("23_ornx7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Attack 1"]
 position = Vector2(10, 0)
@@ -2621,6 +2623,7 @@ texture_filter = 1
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_gt76g")
 animation = &"Water Attack"
+script = ExtResource("23_ornx7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Attack 2"]
 position = Vector2(10, 0)
@@ -2634,6 +2637,7 @@ script = SubResource("GDScript_4qosj")
 texture_filter = 1
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_cjlbh")
+script = ExtResource("23_ornx7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/Attack 3"]
 position = Vector2(10, 0)

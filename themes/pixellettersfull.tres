@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://ckgndws1ywiqh"]
+
+[ext_resource type="FontFile" uid="uid://doxkm432l8txb" path="res://fonts/Pixellettersfull-BnJ5.ttf" id="1_ula53"]
+
+[resource]
+default_font = ExtResource("1_ula53")
+default_font_size = 16

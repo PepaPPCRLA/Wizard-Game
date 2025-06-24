@@ -1,4 +1,4 @@
-[gd_scene load_steps=178 format=4 uid="uid://4kuhak4ql42j"]
+[gd_scene load_steps=180 format=4 uid="uid://4kuhak4ql42j"]
 
 [ext_resource type="Material" uid="uid://bw6dr33oq4iwo" path="res://shaders/menu_bg.tres" id="1_fbwgr"]
 [ext_resource type="Texture2D" uid="uid://ca58cotvw4d4s" path="res://textures/Spell_1_ui.png" id="2_fs4d3"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cedb6hr1nry5q" path="res://textures/Background Wood Tileset.png" id="4_x0ka3"]
 [ext_resource type="Texture2D" uid="uid://c68kv2cg0cn64" path="res://textures/wizard_idle_0001.png" id="5_0h7mo"]
 [ext_resource type="Texture2D" uid="uid://cq286livn815" path="res://textures/sand.png" id="5_bjha6"]
+[ext_resource type="Theme" uid="uid://ckgndws1ywiqh" path="res://themes/pixellettersfull.tres" id="5_fbwgr"]
 [ext_resource type="Texture2D" uid="uid://0e41aj8wmvoq" path="res://textures/PLACEHOLDER.png" id="5_x0ka3"]
 [ext_resource type="Texture2D" uid="uid://diw07wqhc77ll" path="res://textures/wizard_idle_0002.png" id="6_nr8wp"]
 [ext_resource type="Texture2D" uid="uid://cstdalf7usn72" path="res://textures/wizard_jump_0003.png" id="7_d2bti"]
@@ -18,9 +19,9 @@
 [ext_resource type="Texture2D" uid="uid://dxai57qfa300t" path="res://textures/Water Relic.png" id="8_gt76g"]
 [ext_resource type="Texture2D" uid="uid://pijltl8ao27h" path="res://textures/wizard_slide.png" id="8_ta5nu"]
 [ext_resource type="Texture2D" uid="uid://1da73sbldd78" path="res://textures/wizard_wallsliding.png" id="9_flf07"]
-[ext_resource type="PackedScene" uid="uid://chw8kaxub22yj" path="res://spell_1.tscn" id="11_hqns4"]
+[ext_resource type="PackedScene" uid="uid://chw8kaxub22yj" path="res://scenes/spell_1.tscn" id="11_hqns4"]
 [ext_resource type="Texture2D" uid="uid://b0113cl7uiyah" path="res://textures/lava_glow.png" id="12_2hxjc"]
-[ext_resource type="PackedScene" uid="uid://devxyhnuigd0c" path="res://forest_monster.tscn" id="12_e8dv2"]
+[ext_resource type="PackedScene" uid="uid://devxyhnuigd0c" path="res://scenes/forest_monster.tscn" id="12_e8dv2"]
 [ext_resource type="Shader" uid="uid://b7pngxnt50c8t" path="res://shaders/node_2d.gdshader" id="13_6ip5v"]
 [ext_resource type="FontFile" uid="uid://doxkm432l8txb" path="res://fonts/Pixellettersfull-BnJ5.ttf" id="15_7vxoj"]
 [ext_resource type="Texture2D" uid="uid://c6sikavlpiiak" path="res://textures/Forest Monster Projectile_0001.png" id="16_fs4d3"]
@@ -32,13 +33,13 @@
 [ext_resource type="Texture2D" uid="uid://df3vk2i7ic7da" path="res://textures/glow.png" id="22_24dk6"]
 [ext_resource type="Texture2D" uid="uid://xg0ru3dr63qw" path="res://textures/wizard_block_glow.png" id="23_mryly"]
 [ext_resource type="Script" uid="uid://dvk84opxjevpp" path="res://scripts/animated_sprite_2d.gd" id="23_ornx7"]
-[ext_resource type="PackedScene" uid="uid://lyredes2odvn" path="res://water_monster.tscn" id="24_2nhjh"]
+[ext_resource type="PackedScene" uid="uid://lyredes2odvn" path="res://scenes/water_monster.tscn" id="24_2nhjh"]
 [ext_resource type="Texture2D" uid="uid://calcvgrqrfcx2" path="res://textures/Water Monster Projectile.png" id="24_bjha6"]
 [ext_resource type="Script" uid="uid://df52e83y66nco" path="res://scripts/lights.gd" id="24_cnnru"]
 [ext_resource type="Texture2D" uid="uid://dceqfiyaf83uf" path="res://textures/Lava Monster Projectile_0005.png" id="28_4qosj"]
-[ext_resource type="PackedScene" uid="uid://yh8xbbcfwgny" path="res://lava_monster.tscn" id="30_2u7jv"]
+[ext_resource type="PackedScene" uid="uid://yh8xbbcfwgny" path="res://scenes/lava_monster.tscn" id="30_2u7jv"]
 [ext_resource type="Environment" uid="uid://y2fwm37larjk" path="res://world_environments/node_2d.tres" id="37_6ip5v"]
-[ext_resource type="PackedScene" uid="uid://dbg4p36kjrilg" path="res://torch.tscn" id="38_q5dlx"]
+[ext_resource type="PackedScene" uid="uid://dbg4p36kjrilg" path="res://scenes/torch.tscn" id="38_q5dlx"]
 [ext_resource type="Shader" uid="uid://dqpqm87cbi1fa" path="res://shaders/water.gdshader" id="39_7plk7"]
 
 [sub_resource type="GDScript" id="GDScript_ei405"]
@@ -129,6 +130,8 @@ func save(options: String = \"all\"):
 		config.set_value(\"config\",\"graphics\",$\"CanvasLayer/Settings/Panel/GridContainer/Graphics Selector\".get_selected_id())
 	if options == \"all\" or options == \"invincibility\":
 		config.set_value(\"config\", \"invincibility\", $\"CanvasLayer/Settings/Panel/Dev Tools/Invincibility\".button_pressed)
+	if options == \"all\" or options == \"time_scale\":
+		config.set_value(\"config\", \"time_scale\", $\"CanvasLayer/Settings/Panel/Dev Tools/GameSpeed\".value)
 	config.save(\"user://config.cfg\")
 
 func load_data(options: String = \"all\"):
@@ -165,6 +168,7 @@ func load_data(options: String = \"all\"):
 				$World/Sky.modulate = Color8(217, 217, 217)
 				$World/Sky.color = Color8(155, 255, 255)
 				$World/Sun.shadow_filter = 2
+				\"res://scenes/torch.tscn\"
 			1:
 				$World/Sun.enabled = true
 				$World/WorldEnvironment.environment = null
@@ -184,18 +188,26 @@ func load_data(options: String = \"all\"):
 			$\"CanvasLayer/Settings/Panel/Dev Tools/GameSpeed\".visible = true
 			$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".add_item(\"5 Ticks Per Second\", 5)
 			$\"CanvasLayer/Settings/Panel/Dev Tools\".visible = true
+			$\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".select($\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_index(Engine.physics_ticks_per_second))
 			print(\"Developer Mode\")
 		else:
 			$\"CanvasLayer/Settings/Panel/Dev Tools\".visible = false
 	if options == \"all\" or options == \"invincibility\":
 		$\"CanvasLayer/Settings/Panel/Dev Tools/Invincibility\".button_pressed = config.get_value(\"config\", \"invincibility\", false)
+	if options == \"all\" or options == \"time_scale\":
+		$\"CanvasLayer/Settings/Panel/Dev Tools/GameSpeed\".value = config.get_value(\"config\", \"time_scale\", 1)
+		Engine.time_scale = config.get_value(\"config\", \"time_scale\", 1)
+	
 func _on_tps_picker_item_selected(index: int) -> void:
 	Engine.physics_ticks_per_second = $\"CanvasLayer/Settings/Panel/GridContainer/TPS Picker\".get_item_id(index)
 	save(\"ticks_per_second\")
 
 
 func _on_game_speed_value_changed(value: float) -> void:
-	Engine.time_scale = $\"CanvasLayer/Settings/Panel/Dev Tools/GameSpeed\".value
+	Engine.time_scale = value
+	save(\"time_scale\")
+
+
 
 func _on_animation_2_end() -> void:
 	$CanvasLayer/Debugger.visible = false
@@ -1009,7 +1021,9 @@ var blocking: bool = false
 var relics: int = 0
 var world: int = 1
 var target_tps: int = 60
-
+var walljump_grace_period: float = 0
+var last_velocity: Vector2 = Vector2.ZERO
+var direction: int = 0
 
 func _ready() -> void:
 	$AnimationPlayer.play(\"spawn\")
@@ -1020,6 +1034,12 @@ func _physics_process(_delta: float) -> void:
 	var physics_delta = float(1) / Engine.physics_ticks_per_second * Engine.time_scale
 	coyote_time -= physics_delta
 	sliding -= physics_delta
+	walljump_grace_period -= physics_delta
+	if walljump_grace_period >= 0:
+		$\"Opposite Side\".enabled = true
+	else:
+		$\"Opposite Side\".enabled = false
+
 	if Input.is_action_just_pressed(\"block\") and not $\"Force Sliding Req\".is_colliding():
 		$\"../../CanvasLayer/Spell Container/Block/AnimationPlayer\".play(\"block\")
 	elif Input.is_action_just_released(\"block\"):
@@ -1035,7 +1055,7 @@ func _physics_process(_delta: float) -> void:
 		health = 0
 	$\"../../CanvasLayer/HealthBar/HealthLabel\".text = \"Health: \" + str(round(health))
 	if state == \"alive\":
-		var direction := Input.get_axis(\"left\", \"right\")
+		direction = Input.get_axis(\"left\", \"right\")
 		if Input.is_action_just_pressed(\"Spell 1\") and $\"Spell_1 Cooldown\".time_left <= 0 and blocking == false:
 			newspell(\"default\")
 			$\"../../CanvasLayer/Spell Container/Spell 1/AnimationPlayer\".play(\"Fire Spell 1\")
@@ -1066,20 +1086,25 @@ func _physics_process(_delta: float) -> void:
 			if abs(velocity.x) < 300:
 				velocity.x = 300 * direction
 			
-		# Handles Walljump
-		if Input.is_action_just_pressed(\"jump\") and $\"Wall Jump Req\".is_colliding() and not is_on_floor() and sliding <= 0 and blocking == false:
+		# Handles Walljumping
+		if Input.is_action_just_pressed(\"jump\") and ($\"Wall Jump Req\".is_colliding() or $\"Opposite Side\".is_colliding()) and not is_on_floor() and sliding <= 0 and blocking == false:
 			velocity.y = JUMP_VELOCITY
+			if not $\"Wall Jump Req\".is_colliding():
+				facing *= -1
 			if facing == 1:
 				velocity.x = -750
-				facing = -1
-				$AnimatedSprite2D.flip_h = true
-				$\"Wall Jump Req\".position.x = -25
+				if $\"Wall Jump Req\".is_colliding():
+					turn(-1, 0.25)
+				else:
+					walljump_grace_period = -1
+					turn(-1, 0)
 			else:
 				velocity.x = 750
-				facing = 1
-				$AnimatedSprite2D.flip_h = false
-				$\"Wall Jump Req\".position.x = 25
-
+				if $\"Wall Jump Req\".is_colliding():
+					turn(1, 0.25)
+				else:
+					walljump_grace_period = -1
+					turn(1, 0)
 		# Get the input direction and handle the movement/deceleration.
 		# As good practice, you should replace UI actions with custom gameplay actions.
 		if sliding < 0:
@@ -1101,10 +1126,17 @@ func _physics_process(_delta: float) -> void:
 				else:
 					velocity.x *= pow(0.95, physics_delta * target_tps)
 			if velocity.x > 0:
-				turn(1)
+				if is_on_floor():
+					turn(1, 0)
+				else:
+					turn(1, 0.25)
 			else:
 				if velocity.x != 0:
-					turn(-1)
+					if is_on_floor():
+						turn(-1, 0)
+					else:
+						turn(-1, 0.25)
+
 		if Input.is_action_just_pressed(\"slide\") and is_on_floor() and sliding < 0 and blocking == false:
 			sliding = 0.25
 			if direction:
@@ -1152,22 +1184,34 @@ func _physics_process(_delta: float) -> void:
 			$\"Lights/Head Light\".position.x = facing * -5.5
 		else:
 			$\"Lights/Head Light\".position.x = facing * -14.5
-		move_and_slide()
+	move_and_slide()
+#Handles Turning
+func turn(dir: int = 0, new_grace_period = 0.25) -> void:
+	if new_grace_period > walljump_grace_period and not facing == dir:
+		walljump_grace_period = new_grace_period
 
-
-func turn(dir) -> void:
-	if is_on_floor():
-		pass
-	else:
-		await get_tree().create_timer(0.1).timeout
-	if dir == 1:
-		$AnimatedSprite2D.flip_h = false
-		facing = 1
-		$\"Wall Jump Req\".position.x = 25
-	else:
-		$AnimatedSprite2D.flip_h = true
-		facing = -1
-		$\"Wall Jump Req\".position.x = -25
+	match dir:
+		1:
+			facing = 1
+			$\"Opposite Side\".position.x = -25
+			$\"Wall Jump Req\".position.x = 25
+			$AnimatedSprite2D.flip_h = false
+		-1:
+			
+			facing = -1
+			$\"Opposite Side\".position.x = 25
+			$\"Wall Jump Req\".position.x = -25
+			$AnimatedSprite2D.flip_h = true
+		0:
+			facing *= -1
+			if facing == 1:
+				$AnimatedSprite2D.flip_h = false
+				$\"Wall Jump Req\".position.x = 25
+				$\"Opposite Side\".position.x = 25
+			else:
+				$AnimatedSprite2D.flip_h = true
+				$\"Wall Jump Req\".position.x = -25
+				$\"Opposite Side\".position.x = -25
 
 func newspell(type) -> void:
 	match type:
@@ -1374,6 +1418,8 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_6ip5v"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hqns4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6ocxv"]
 
 [sub_resource type="Animation" id="Animation_e8dv2"]
 length = 0.001
@@ -2138,6 +2184,7 @@ anchor_right = 0.229
 anchor_bottom = 1.0
 offset_top = 0.200012
 offset_right = 0.191986
+theme = ExtResource("5_fbwgr")
 color = Color(0.560784, 0.176471, 0, 1)
 
 [node name="HealthBar" type="ColorRect" parent="CanvasLayer/HealthBar"]
@@ -2170,6 +2217,7 @@ offset_right = -36.0
 offset_bottom = -52.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("5_fbwgr")
 
 [node name="Panel" type="Panel" parent="CanvasLayer/Settings"]
 layout_mode = 2
@@ -2211,12 +2259,12 @@ offset_bottom = -0.212036
 columns = 2
 
 [node name="Debugger" type="CheckButton" parent="CanvasLayer/Settings/Panel/GridContainer"]
+clip_contents = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_horizontal = 3
 focus_mode = 0
 text = "Debugger"
-flat = true
 
 [node name="TPS Picker" type="OptionButton" parent="CanvasLayer/Settings/Panel/GridContainer"]
 custom_minimum_size = Vector2(0, 100)
@@ -2299,12 +2347,14 @@ theme_override_styles/up_background_disabled = SubResource("StyleBoxEmpty_7mj2a"
 theme_override_styles/up_background_pressed = SubResource("StyleBoxEmpty_fshgd")
 theme_override_styles/up_background_hovered = SubResource("StyleBoxEmpty_lbrxf")
 theme_override_styles/up_background = SubResource("StyleBoxEmpty_xjt7e")
-step = 0.1
+step = 0.0
 value = 1.0
 allow_greater = true
+allow_lesser = true
 alignment = 1
 update_on_text_changed = true
 prefix = "Speed Scale:"
+custom_arrow_step = 0.1
 
 [node name="World" type="Node2D" parent="."]
 process_mode = 1
@@ -2521,6 +2571,10 @@ hit_from_inside = true
 [node name="Wall Jump Req" type="ShapeCast2D" parent="World/Wizard"]
 position = Vector2(25, 0)
 shape = SubResource("RectangleShape2D_hqns4")
+
+[node name="Opposite Side" type="ShapeCast2D" parent="World/Wizard"]
+position = Vector2(-25, 0)
+shape = SubResource("RectangleShape2D_6ocxv")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="World/Wizard"]
 libraries = {
@@ -2758,6 +2812,12 @@ ignore_time_scale = true
 wait_time = 0.1
 one_shot = true
 ignore_time_scale = true
+
+[node name="Assets" type="Node" parent="."]
+
+[node name="Torch" parent="Assets" instance=ExtResource("38_q5dlx")]
+position = Vector2(-13669, 287)
+scale = Vector2(4, 4)
 
 [connection signal="pressed" from="CanvasLayer/Settings/Panel/Back/Close" to="." method="_on_close_pressed"]
 [connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/Debugger" to="." method="_on_debugger_toggled"]

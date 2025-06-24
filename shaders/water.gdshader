@@ -31,7 +31,7 @@ vec2 UVtoSreenUV(vec2 uv, bool is_camera_center, vec2 texture_pixel_size, vec2 s
 
 	if (is_camera_center) {
 
-		return (fragcoord.xy + suv*0.01/texture_pixel_size)*screen_pixel_size*0.5;
+		return (fragcoord.xy + suv*0.01/texture_pixel_size)*screen_pixel_size * 0.25;
 	} else {
 
 		return (fragcoord.xy + suv*0.01/texture_pixel_size)*screen_pixel_size;

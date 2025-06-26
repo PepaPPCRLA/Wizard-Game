@@ -1,4 +1,4 @@
-[gd_scene load_steps=188 format=4 uid="uid://4kuhak4ql42j"]
+[gd_scene load_steps=195 format=4 uid="uid://4kuhak4ql42j"]
 
 [ext_resource type="Material" uid="uid://bw6dr33oq4iwo" path="res://shaders/menu_bg.tres" id="1_fbwgr"]
 [ext_resource type="Texture2D" uid="uid://ca58cotvw4d4s" path="res://textures/Spell_1_ui.png" id="2_fs4d3"]
@@ -1294,6 +1294,7 @@ func newspell(type) -> void:
 		\"default\":
 			if mana > 5:
 				mana_change(-5, true)
+				$\"AnimatedSprite2D/Particles/Cast Spell\".emitting = true
 				var newSpell = $\"../Spell 1\".duplicate()
 				newSpell.initialSpeed = abs(velocity.x)
 				newSpell.position = position
@@ -1304,6 +1305,7 @@ func newspell(type) -> void:
 		\"water\":
 			if mana > 10:
 				mana_change(-10, true)
+				$\"AnimatedSprite2D/Particles/Cast Spell\".emitting = true
 				var newSpell = $\"../Spell 2\".duplicate()
 				newSpell.initialSpeed = abs(velocity.x)
 				newSpell.position = position
@@ -1511,6 +1513,49 @@ animations = [{
 "name": &"wallsliding",
 "speed": 0.0
 }]
+
+[sub_resource type="GDScript" id="GDScript_4urfc"]
+resource_name = "particles"
+script/source = "extends Node2D
+
+func _process(delta: float) -> void:
+	if $\"..\".flip_h == true:
+		scale.x = -1
+	else:
+		scale.x = 1
+"
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_sfkyn"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_4urfc"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.7, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.700164, 0.700164, 0.700164, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4urfc"]
+gradient = SubResource("Gradient_4urfc")
+
+[sub_resource type="Curve" id="Curve_rntdg"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.720588, 1), 0.0, 0.0, 0, 0, Vector2(0.801471, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_sfkyn"]
+curve = SubResource("Curve_rntdg")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rntdg"]
+particle_flag_disable_z = true
+angle_min = -45.0
+angle_max = 45.0
+spread = 25.0
+initial_velocity_min = -20.0
+initial_velocity_max = -20.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.05
+scale_max = 0.1
+scale_curve = SubResource("CurveTexture_sfkyn")
+color_ramp = SubResource("GradientTexture1D_4urfc")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6ip5v"]
 
@@ -2670,6 +2715,7 @@ process_material = SubResource("ParticleProcessMaterial_ei405")
 script = ExtResource("17_540hr")
 
 [node name="Hitbox" type="CollisionShape2D" parent="World/Wizard"]
+visible = false
 z_as_relative = false
 position = Vector2(0, 5)
 shape = SubResource("CapsuleShape2D_2nhjh")
@@ -2683,6 +2729,7 @@ animation = &"idle"
 script = ExtResource("23_ornx7")
 
 [node name="Particles" type="Node2D" parent="World/Wizard/AnimatedSprite2D"]
+script = SubResource("GDScript_4urfc")
 
 [node name="Explode Shield" type="GPUParticles2D" parent="World/Wizard/AnimatedSprite2D/Particles"]
 modulate = Color(0.111967, 0.331702, 0.78673, 1)
@@ -2697,6 +2744,19 @@ preprocess = 0.2
 speed_scale = 3.0
 explosiveness = 0.8
 process_material = SubResource("ParticleProcessMaterial_6r0o2")
+
+[node name="Cast Spell" type="GPUParticles2D" parent="World/Wizard/AnimatedSprite2D/Particles"]
+modulate = Color(0.0666667, 0.443137, 0.894118, 1)
+material = SubResource("CanvasItemMaterial_sfkyn")
+position = Vector2(14, 4)
+rotation = 3.14159
+emitting = false
+amount = 500
+texture = ExtResource("7_6r0o2")
+one_shot = true
+speed_scale = 4.0
+explosiveness = 0.6
+process_material = SubResource("ParticleProcessMaterial_rntdg")
 
 [node name="Lights" type="AnimatedSprite2D" parent="World/Wizard"]
 texture_filter = 1
@@ -2730,21 +2790,25 @@ offset = Vector2(0, 20)
 position_smoothing_enabled = true
 
 [node name="Sliding Req" type="ShapeCast2D" parent="World/Wizard"]
+visible = false
 position = Vector2(20, 12)
 shape = SubResource("CircleShape2D_6ip5v")
 target_position = Vector2(0, 20)
 
 [node name="Force Sliding Req" type="RayCast2D" parent="World/Wizard"]
+visible = false
 position = Vector2(0, 45.58)
 scale = Vector2(2, 2)
 target_position = Vector2(0, -45)
 hit_from_inside = true
 
 [node name="Wall Jump Req" type="ShapeCast2D" parent="World/Wizard"]
+visible = false
 position = Vector2(25, 0)
 shape = SubResource("RectangleShape2D_hqns4")
 
 [node name="Opposite Side" type="ShapeCast2D" parent="World/Wizard"]
+visible = false
 position = Vector2(-25, 0)
 shape = SubResource("RectangleShape2D_6ocxv")
 

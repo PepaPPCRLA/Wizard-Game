@@ -8,15 +8,22 @@ var last_position: Vector2
 @onready var Wizard: CharacterBody2D = $"../Wizard"
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	$Trail.local_coords = true
 	if not facing:
 		facing = -1000
 		position.y = 1000
 	elif facing == -1:
+		$Trail.rotation_degrees = 180
+		$Trail.position.x = -10
 		Sprite.rotation_degrees = -45
 		$CollisionShape2D.position.x = -10
 		position = Wizard.position + Vector2(10,10)
 	else:
+		$Trail.rotation_degrees = 0
+		$Trail.position.x = 10
+		Sprite.rotation_degrees = 135
 		position = Wizard.position + Vector2(10,10)
+		
 	last_position = position
 	Sprite.modulate.a = 0
 	get_tree().create_tween().tween_property(Sprite, "modulate:a", 1, 0.25)
@@ -62,5 +69,6 @@ func explode(body = null):
 		$"Hit Detection Improver".queue_free()
 		$Explosion.position *= facing
 		$Explosion.emitting = true
+		$Trail.queue_free()
 		await get_tree().create_timer(5).timeout
 		queue_free()

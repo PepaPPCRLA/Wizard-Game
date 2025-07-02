@@ -1,4 +1,4 @@
-[gd_scene load_steps=195 format=4 uid="uid://4kuhak4ql42j"]
+[gd_scene load_steps=201 format=4 uid="uid://4kuhak4ql42j"]
 
 [ext_resource type="Material" uid="uid://bw6dr33oq4iwo" path="res://shaders/menu_bg.tres" id="1_fbwgr"]
 [ext_resource type="Texture2D" uid="uid://ca58cotvw4d4s" path="res://textures/Spell_1_ui.png" id="2_fs4d3"]
@@ -43,6 +43,9 @@
 [ext_resource type="Environment" uid="uid://y2fwm37larjk" path="res://world_environments/node_2d.tres" id="37_6ip5v"]
 [ext_resource type="PackedScene" uid="uid://dbg4p36kjrilg" path="res://scenes/torch.tscn" id="38_q5dlx"]
 [ext_resource type="Shader" uid="uid://dqpqm87cbi1fa" path="res://shaders/water.gdshader" id="39_7plk7"]
+[ext_resource type="Script" uid="uid://w0xhqri23ylk" path="res://scenes/animation_player.gd" id="44_hiivq"]
+[ext_resource type="Texture2D" uid="uid://6775jbyebauh" path="res://textures/boss elemental h.png" id="44_rntdg"]
+[ext_resource type="Texture2D" uid="uid://bjh6gsnbgacpg" path="res://textures/Elemental Boss Aura.png" id="45_hiivq"]
 
 [sub_resource type="GDScript" id="GDScript_ei405"]
 resource_name = "Debugger"
@@ -2175,6 +2178,44 @@ shader_parameter/sinpowder = 4.0
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_bjha6"]
 blend_mode = 1
 
+[sub_resource type="Animation" id="Animation_w8l5x"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_l2ef6"]
+resource_name = "idle"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.28319]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1wuir"]
+_data = {
+&"RESET": SubResource("Animation_w8l5x"),
+&"idle": SubResource("Animation_l2ef6")
+}
+
 [node name="Control" type="Control" node_paths=PackedStringArray("debugger", "vsync")]
 process_mode = 3
 layout_mode = 3
@@ -3053,6 +3094,38 @@ ignore_time_scale = true
 [node name="Torch" parent="Assets" instance=ExtResource("38_q5dlx")]
 position = Vector2(-13669, 287)
 scale = Vector2(4, 4)
+
+[node name="Sprite" type="SubViewportContainer" parent="Assets"]
+offset_left = 494.0
+offset_top = 240.0
+offset_right = 750.0
+offset_bottom = 496.0
+scale = Vector2(2, 2)
+pivot_offset = Vector2(128, 128)
+
+[node name="SubViewport" type="SubViewport" parent="Assets/Sprite"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(256, 256)
+render_target_update_mode = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Assets/Sprite/SubViewport"]
+root_node = NodePath("../ElementalBossAura")
+libraries = {
+&"": SubResource("AnimationLibrary_1wuir")
+}
+script = ExtResource("44_hiivq")
+
+[node name="BossElementalH" type="Sprite2D" parent="Assets/Sprite/SubViewport"]
+position = Vector2(128, 128)
+texture = ExtResource("44_rntdg")
+
+[node name="ElementalBossAura" type="Sprite2D" parent="Assets/Sprite/SubViewport"]
+position = Vector2(128, 128)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("45_hiivq")
+offset = Vector2(0.005, 0)
+region_rect = Rect2(0, 0, 42, 46)
 
 [connection signal="pressed" from="CanvasLayer/Settings/Panel/Back/Close" to="." method="_on_close_pressed"]
 [connection signal="toggled" from="CanvasLayer/Settings/Panel/GridContainer/Debugger" to="." method="_on_debugger_toggled"]

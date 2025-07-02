@@ -12,8 +12,8 @@ specular_texture = ExtResource("3_wfdi7")
 specular_shininess = 0.32
 
 [sub_resource type="Gradient" id="Gradient_fbwgr"]
-offsets = PackedFloat32Array(0, 0.490909, 1)
-colors = PackedColorArray(1, 1, 0, 1, 0.590909, 0.590909, 0.590909, 1, 1, 1, 1, 1)
+offsets = PackedFloat32Array(0, 0.436364, 1)
+colors = PackedColorArray(0.957015, 0.956945, 0.00339226, 1, 0.966672, 0.806155, 0.654356, 1, 1, 0.556863, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_7mj2a"]
 gradient = SubResource("Gradient_fbwgr")
@@ -39,7 +39,7 @@ gravity = Vector3(0, 0, 0)
 scale_min = 6.0
 scale_max = 8.0
 scale_curve = SubResource("CurveTexture_lbrxf")
-color = Color(1, 0.811765, 0.168627, 1)
+color = Color(1, 0.968627, 0.6, 1)
 color_ramp = SubResource("GradientTexture1D_7mj2a")
 
 [node name="Torch" type="Sprite2D"]
@@ -47,13 +47,6 @@ z_index = -5
 texture = SubResource("CanvasTexture_fshgd")
 
 [node name="Light" type="PointLight2D" parent="."]
-position = Vector2(0, -6)
-color = Color(1, 0.968627, 0.486275, 1)
-range_item_cull_mask = 2
-texture = ExtResource("4_vkaj5")
-height = 29.0
-
-[node name="Light2" type="PointLight2D" parent="."]
 position = Vector2(0, -6)
 color = Color(1, 0.968627, 0.486275, 1)
 energy = 0.5
